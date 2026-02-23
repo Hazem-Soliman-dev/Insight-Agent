@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // Direct connection for migrations (without pooling)
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+model User {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  passwordHash   String
+  name           String?
+  role           Role             @default(USER)
+  tier           SubscriptionTier @default(FREE)
+  projects       Project[]
+  queriesUsed    Int              @default(0)
+  queriesResetAt DateTime         @default(now())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+model Project {
+  id        String          @id @default(uuid())
+  name      String
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tables    TableMetadata[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([userId])
+}
+
+model TableMetadata {
+  id           String   @id @default(uuid())
+  projectId    String
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tableName    String   // e.g., "proj_abc123_customers"
+  originalName String   // e.g., "customers.csv"
+  columns      String[] // Column names
+  createdAt    DateTime @default(now())
+
+  @@index([projectId])
+}
