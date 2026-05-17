@@ -3,20 +3,15 @@ import {
   ForbiddenException,
   PayloadTooLargeException,
 } from '@nestjs/common';
+import { Polar } from '@polar-sh/sdk';
 import { PrismaService } from '../prisma/prisma.service';
-import { TIER_LIMITS, TIER_PRICES, TierLimits } from './subscription.constants';
-import { SubscriptionTier } from '@prisma/client';
 
 @Injectable()
 export class SubscriptionService {
-  constructor(private prisma: PrismaService) {}
+  private readonly MAX_PROJECTS = 10;
+  private readonly MAX_FILE_SIZE_MB = 20;
 
-  /**
-   * Get tier limits for a specific tier
-   */
-  getTierLimits(tier: SubscriptionTier): TierLimits {
-    return TIER_LIMITS[tier];
-  }
+  constructor(private prisma: PrismaService) {}
 
   /**
    * Check if user can create a new project
@@ -31,19 +26,17 @@ export class SubscriptionService {
       throw new ForbiddenException('User not found');
     }
 
-    const limits = this.getTierLimits(user.tier);
     const currentProjects = user._count.projects;
 
-    // -1 means unlimited
-    if (limits.maxProjects !== -1 && currentProjects >= limits.maxProjects) {
+    if (currentProjects >= this.MAX_PROJECTS) {
       throw new ForbiddenException(
-        `Project limit reached. Your ${user.tier} plan allows ${limits.maxProjects} projects. Upgrade to create more.`,
+        `Project limit reached. You can create a maximum of ${this.MAX_PROJECTS} projects. Contact support to increase this limit.`,
       );
     }
   }
 
   /**
-   * Check if user can execute a query
+   * Check if user can execute a query (has credits)
    */
   async checkQueryLimit(userId: string): Promise<void> {
     const user = await this.prisma.user.findUnique({
@@ -54,67 +47,46 @@ export class SubscriptionService {
       throw new ForbiddenException('User not found');
     }
 
-    const limits = this.getTierLimits(user.tier);
-
-    // Check if we need to reset monthly usage
-    const now = new Date();
-    const resetDate = new Date(user.queriesResetAt);
-
-    if (
-      now.getMonth() !== resetDate.getMonth() ||
-      now.getFullYear() !== resetDate.getFullYear()
-    ) {
-      // Reset usage for new month
-      await this.prisma.user.update({
-        where: { id: userId },
-        data: {
-          queriesUsed: 0,
-          queriesResetAt: now,
-        },
-      });
-      return; // User can proceed with query
-    }
-
-    // -1 means unlimited
-    if (
-      limits.maxQueriesPerMonth !== -1 &&
-      user.queriesUsed >= limits.maxQueriesPerMonth
-    ) {
+    if (user.creditsBalance <= 0) {
       throw new ForbiddenException(
-        `Monthly query limit reached. Your ${user.tier} plan allows ${limits.maxQueriesPerMonth} queries per month. Upgrade for more queries.`,
+        'You have run out of credits. Please purchase more credits to continue.',
       );
     }
   }
 
   /**
-   * Increment query usage counter
+   * Increment query usage counter (deduct credit)
    */
   async incrementQueryCount(userId: string): Promise<void> {
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        queriesUsed: { increment: 1 },
-      },
+    await this.prisma.$transaction(async (tx) => {
+      // Deduct 1 credit
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          creditsBalance: { decrement: 1 },
+        },
+      });
+
+      // Log transaction
+      await tx.creditTransaction.create({
+        data: {
+          userId,
+          amount: -1,
+          type: 'USAGE',
+        },
+      });
     });
   }
 
   /**
-   * Check if file size is within tier limit
+   * Check if file size is within global limit
    */
+
   async checkFileSizeLimit(userId: string, fileSizeMB: number): Promise<void> {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      throw new ForbiddenException('User not found');
-    }
-
-    const limits = this.getTierLimits(user.tier);
-
-    if (fileSizeMB > limits.maxFileSizeMB) {
+    await Promise.resolve();
+    if (fileSizeMB > this.MAX_FILE_SIZE_MB) {
       throw new PayloadTooLargeException(
-        `File size exceeds limit. Your ${user.tier} plan allows files up to ${limits.maxFileSizeMB} MB. Upgrade for larger files.`,
+        `File size exceeds limit. Maximum file size allowed is ${this.MAX_FILE_SIZE_MB} MB.`,
       );
     }
   }
@@ -134,67 +106,109 @@ export class SubscriptionService {
       throw new ForbiddenException('User not found');
     }
 
-    const limits = this.getTierLimits(user.tier);
-
-    return {
-      tier: user.tier,
-      projects: {
-        used: user._count.projects,
-        limit: limits.maxProjects,
-      },
-      queries: {
-        used: user.queriesUsed,
-        limit: limits.maxQueriesPerMonth,
-        resetAt: user.queriesResetAt,
-      },
-      fileSize: {
-        limit: limits.maxFileSizeMB,
-      },
-    };
-  }
-
-  /**
-   * Reset monthly usage for all users (cron job)
-   */
-  async resetMonthlyUsage(): Promise<void> {
-    const now = new Date();
-
-    await this.prisma.user.updateMany({
-      data: {
-        queriesUsed: 0,
-        queriesResetAt: now,
+    // Get number of queries executed by counting USAGE transactions
+    const queryCount = await this.prisma.creditTransaction.count({
+      where: {
+        userId,
+        type: 'USAGE',
       },
     });
+
+    return {
+      creditsBalance: user.creditsBalance,
+      projects: {
+        used: user._count.projects,
+        limit: this.MAX_PROJECTS,
+      },
+      queries: {
+        totalExecuted: queryCount,
+      },
+      fileSize: {
+        limit: this.MAX_FILE_SIZE_MB,
+      },
+    };
   }
 
   /**
-   * Get all subscription plans with limits and prices (admin)
+   * Get all credit plans
    */
   getPlans() {
-    return Object.entries(TIER_LIMITS).map(([tier, limits]) => ({
-      tier,
-      limits,
-      price: TIER_PRICES[tier as SubscriptionTier],
-    }));
+    return [
+      {
+        id: 'credits-starter',
+        name: 'Starter Credits Pack',
+        credits: 20,
+        price: 5.0,
+        description: 'Perfect for trying out new insights',
+      },
+      {
+        id: 'credits-growth',
+        name: 'Growth Credits Pack',
+        credits: 100,
+        price: 19.0,
+        description: 'Best for regular analysis',
+      },
+      {
+        id: 'credits-power',
+        name: 'Power Credits Pack',
+        credits: 500,
+        price: 59.0,
+        description: 'Ideal for power users and teams',
+      },
+    ];
   }
 
   /**
-   * Update a subscription plan's limits and price (admin)
+   * Create a Polar Checkout Session for a credit pack purchase
    */
-  updatePlan(
-    tier: SubscriptionTier,
-    data: { limits?: Partial<TierLimits>; price?: number },
-  ) {
-    if (data.limits) {
-      TIER_LIMITS[tier] = { ...TIER_LIMITS[tier], ...data.limits };
+  async createCheckoutSession(
+    userId: string,
+    planId: string,
+  ): Promise<{ url: string | null }> {
+    const plans = this.getPlans();
+    const plan = plans.find((p) => p.id === planId);
+
+    if (!plan) {
+      throw new ForbiddenException('Invalid credit plan selected');
     }
-    if (data.price !== undefined) {
-      TIER_PRICES[tier] = data.price;
+
+    // Map plan ID to Polar Product ID
+    let productId = '';
+    if (planId === 'credits-starter') {
+      productId = process.env.POLAR_STARTER_PRODUCT_ID || '';
+    } else if (planId === 'credits-growth') {
+      productId = process.env.POLAR_GROWTH_PRODUCT_ID || '';
+    } else if (planId === 'credits-power') {
+      productId = process.env.POLAR_POWER_PRODUCT_ID || '';
     }
-    return {
-      tier,
-      limits: TIER_LIMITS[tier],
-      price: TIER_PRICES[tier],
-    };
+
+    if (!productId) {
+      throw new ForbiddenException(
+        'Polar Product ID is not configured for this plan. Please check backend environment variables.',
+      );
+    }
+
+    const polar = new Polar({
+      accessToken: process.env.POLAR_ACCESS_TOKEN || '',
+      server: process.env.NODE_ENV === 'development' ? 'sandbox' : undefined,
+    });
+
+    try {
+      const checkout = await polar.checkouts.create({
+        products: [productId],
+        successUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/?payment=success`,
+        metadata: {
+          userId,
+          credits: String(plan.credits),
+          planId: plan.id,
+        },
+      });
+
+      return { url: checkout.url || null };
+    } catch (error) {
+      throw new ForbiddenException(
+        `Failed to create Polar Checkout Session: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+    }
   }
 }

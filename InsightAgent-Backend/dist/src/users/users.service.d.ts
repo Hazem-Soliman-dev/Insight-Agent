@@ -1,6 +1,5 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { UpdateTierDto } from './dto/update-tier.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 export declare class UsersService {
     private prisma;
@@ -8,11 +7,10 @@ export declare class UsersService {
     findOne(id: string): Promise<{
         name: string | null;
         id: string;
+        clerkUserId: string;
         email: string;
         role: import("@prisma/client").$Enums.Role;
-        tier: import("@prisma/client").$Enums.SubscriptionTier;
-        queriesUsed: number;
-        queriesResetAt: Date;
+        creditsBalance: number;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -21,23 +19,21 @@ export declare class UsersService {
         id: string;
         email: string;
         role: import("@prisma/client").$Enums.Role;
-        tier: import("@prisma/client").$Enums.SubscriptionTier;
+        creditsBalance: number;
         createdAt: Date;
         updatedAt: Date;
     }>;
     findAll(page?: number, limit?: number, filters?: {
-        tier?: string;
         role?: string;
         search?: string;
     }): Promise<{
         users: {
             name: string | null;
             id: string;
+            clerkUserId: string;
             email: string;
             role: import("@prisma/client").$Enums.Role;
-            tier: import("@prisma/client").$Enums.SubscriptionTier;
-            queriesUsed: number;
-            queriesResetAt: Date;
+            creditsBalance: number;
             createdAt: Date;
             _count: {
                 projects: number;
@@ -53,11 +49,10 @@ export declare class UsersService {
     findOneWithStats(id: string): Promise<{
         name: string | null;
         id: string;
+        clerkUserId: string;
         email: string;
         role: import("@prisma/client").$Enums.Role;
-        tier: import("@prisma/client").$Enums.SubscriptionTier;
-        queriesUsed: number;
-        queriesResetAt: Date;
+        creditsBalance: number;
         createdAt: Date;
         updatedAt: Date;
         _count: {
@@ -68,21 +63,27 @@ export declare class UsersService {
         totalUsers: number;
         totalProjects: number;
         totalQueries: number;
-        tierDistribution: Record<string, number>;
+        totalCreditsBalance: number;
+        tierDistribution: {
+            'Starter (0-5 credits)': number;
+            'Regular (6-20 credits)': number;
+            'Growth (21-100 credits)': number;
+            'Power (101+ credits)': number;
+        };
     }>;
-    updateTier(userId: string, updateTierDto: UpdateTierDto): Promise<{
+    updateCredits(userId: string, credits: number): Promise<{
         name: string | null;
         id: string;
         email: string;
         role: import("@prisma/client").$Enums.Role;
-        tier: import("@prisma/client").$Enums.SubscriptionTier;
+        creditsBalance: number;
     }>;
     updateRole(userId: string, updateRoleDto: UpdateRoleDto): Promise<{
         name: string | null;
         id: string;
         email: string;
         role: import("@prisma/client").$Enums.Role;
-        tier: import("@prisma/client").$Enums.SubscriptionTier;
+        creditsBalance: number;
     }>;
     delete(userId: string): Promise<void>;
 }

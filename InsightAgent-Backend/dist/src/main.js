@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 const app_module_1 = require("./app.module");
 async function bootstrap() {
     const logger = new common_1.Logger('Bootstrap');
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, { rawBody: true });
     app.use((0, helmet_1.default)());
     app.use((0, express_rate_limit_1.default)({
         windowMs: 15 * 60 * 1000,

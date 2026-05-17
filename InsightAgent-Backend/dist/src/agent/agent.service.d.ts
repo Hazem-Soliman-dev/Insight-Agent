@@ -39,4 +39,5 @@ export declare class AgentService {
     private generateChartTitle;
     executeQuery(projectId: string, question: string, userId: string): Promise<QueryResult>;
     previewTable(projectId: string, tableName: string, limit?: number): Promise<Record<string, unknown>[]>;
+    private sanitizeBigInt;
 }

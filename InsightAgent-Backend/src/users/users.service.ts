@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { UpdateTierDto } from './dto/update-tier.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { Role, SubscriptionTier } from '@prisma/client';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -14,12 +13,11 @@ export class UsersService {
       where: { id },
       select: {
         id: true,
+        clerkUserId: true,
         email: true,
         name: true,
         role: true,
-        tier: true,
-        queriesUsed: true,
-        queriesResetAt: true,
+        creditsBalance: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -41,7 +39,7 @@ export class UsersService {
         email: true,
         name: true,
         role: true,
-        tier: true,
+        creditsBalance: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -51,12 +49,11 @@ export class UsersService {
   async findAll(
     page = 1,
     limit = 20,
-    filters?: { tier?: string; role?: string; search?: string },
+    filters?: { role?: string; search?: string },
   ) {
     const skip = (page - 1) * limit;
 
     interface UserWhereQuery {
-      tier?: SubscriptionTier;
       role?: Role;
       OR?: Array<
         | { email?: { contains: string; mode: 'insensitive' } }
@@ -65,10 +62,6 @@ export class UsersService {
     }
 
     const where: UserWhereQuery = {};
-
-    if (filters?.tier) {
-      where.tier = filters.tier as SubscriptionTier;
-    }
 
     if (filters?.role) {
       where.role = filters.role as Role;
@@ -88,12 +81,11 @@ export class UsersService {
         take: limit,
         select: {
           id: true,
+          clerkUserId: true,
           email: true,
           name: true,
           role: true,
-          tier: true,
-          queriesUsed: true,
-          queriesResetAt: true,
+          creditsBalance: true,
           createdAt: true,
           _count: {
             select: { projects: true },
@@ -120,12 +112,11 @@ export class UsersService {
       where: { id },
       select: {
         id: true,
+        clerkUserId: true,
         email: true,
         name: true,
         role: true,
-        tier: true,
-        queriesUsed: true,
-        queriesResetAt: true,
+        creditsBalance: true,
         createdAt: true,
         updatedAt: true,
         _count: {
@@ -142,48 +133,61 @@ export class UsersService {
   }
 
   async getStats() {
-    const [totalUsers, totalProjects, tierDistribution] = await Promise.all([
+    const [
+      totalUsers,
+      totalProjects,
+      totalCreditsStats,
+      starterCount,
+      regularCount,
+      growthCount,
+      powerCount,
+    ] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.project.count(),
-      this.prisma.user.groupBy({
-        by: ['tier'],
-        _count: true,
+      this.prisma.user.aggregate({
+        _sum: {
+          creditsBalance: true,
+        },
       }),
+      this.prisma.user.count({ where: { creditsBalance: { lte: 5 } } }),
+      this.prisma.user.count({ where: { creditsBalance: { gt: 5, lte: 20 } } }),
+      this.prisma.user.count({
+        where: { creditsBalance: { gt: 20, lte: 100 } },
+      }),
+      this.prisma.user.count({ where: { creditsBalance: { gt: 100 } } }),
     ]);
 
-    // Calculate total queries (sum of all users' queriesUsed)
-    const queryStats = await this.prisma.user.aggregate({
-      _sum: {
-        queriesUsed: true,
+    // Calculate total queries (count of all USAGE credit transactions)
+    const queryStats = await this.prisma.creditTransaction.count({
+      where: {
+        type: 'USAGE',
       },
     });
-
-    const tiers = tierDistribution.reduce(
-      (acc, item) => {
-        acc[item.tier] = item._count;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
 
     return {
       totalUsers,
       totalProjects,
-      totalQueries: queryStats._sum.queriesUsed || 0,
-      tierDistribution: tiers,
+      totalQueries: queryStats || 0,
+      totalCreditsBalance: totalCreditsStats._sum.creditsBalance || 0,
+      tierDistribution: {
+        'Starter (0-5 credits)': starterCount,
+        'Regular (6-20 credits)': regularCount,
+        'Growth (21-100 credits)': growthCount,
+        'Power (101+ credits)': powerCount,
+      },
     };
   }
 
-  async updateTier(userId: string, updateTierDto: UpdateTierDto) {
+  async updateCredits(userId: string, credits: number) {
     return this.prisma.user.update({
       where: { id: userId },
-      data: { tier: updateTierDto.tier },
+      data: { creditsBalance: credits },
       select: {
         id: true,
         email: true,
         name: true,
         role: true,
-        tier: true,
+        creditsBalance: true,
       },
     });
   }
@@ -197,7 +201,7 @@ export class UsersService {
         email: true,
         name: true,
         role: true,
-        tier: true,
+        creditsBalance: true,
       },
     });
   }

@@ -1,39 +1,15 @@
-import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
-import type { JwtPayload } from './decorators/current-user.decorator';
+import * as client from '@prisma/client';
 export declare class AuthController {
-    private authService;
-    constructor(authService: AuthService);
-    register(registerDto: RegisterDto): Promise<{
-        accessToken: string;
-        refreshToken: string;
+    getProfile(user: client.User): {
         user: {
             name: string | null;
             id: string;
+            clerkUserId: string;
             email: string;
-            role: import("@prisma/client").$Enums.Role;
-            tier: import("@prisma/client").$Enums.SubscriptionTier;
+            role: client.$Enums.Role;
+            creditsBalance: number;
             createdAt: Date;
+            updatedAt: Date;
         };
-    }>;
-    login(loginDto: LoginDto): Promise<{
-        accessToken: string;
-        refreshToken: string;
-        user: {
-            id: string;
-            email: string;
-            name: string | null;
-            role: import("@prisma/client").$Enums.Role;
-            tier: import("@prisma/client").$Enums.SubscriptionTier;
-            createdAt: Date;
-        };
-    }>;
-    getProfile(user: JwtPayload): {
-        user: JwtPayload;
     };
-    refresh(user: JwtPayload): Promise<{
-        accessToken: string;
-        refreshToken: string;
-    }>;
 }

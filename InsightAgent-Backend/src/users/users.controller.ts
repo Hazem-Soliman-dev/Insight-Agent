@@ -11,14 +11,12 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { UpdateTierDto } from './dto/update-tier.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import type { JwtPayload } from '../auth/decorators/current-user.decorator';
-import { Role } from '@prisma/client';
+import * as client from '@prisma/client';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -26,13 +24,13 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get('me')
-  async getProfile(@CurrentUser() user: JwtPayload) {
+  async getProfile(@CurrentUser() user: client.User) {
     return this.usersService.findOne(user.id);
   }
 
   @Patch('me')
   async updateProfile(
-    @CurrentUser() user: JwtPayload,
+    @CurrentUser() user: client.User,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
     return this.usersService.updateProfile(user.id, updateProfileDto);
@@ -41,44 +39,43 @@ export class UsersController {
   // Admin endpoints
   @Get('stats')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(client.Role.ADMIN)
   async getStats() {
     return this.usersService.getStats();
   }
 
   @Get()
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(client.Role.ADMIN)
   async findAll(
     @Query('page', new ParseIntPipe({ optional: true })) page = 1,
     @Query('limit', new ParseIntPipe({ optional: true })) limit = 20,
-    @Query('tier') tier?: string,
     @Query('role') role?: string,
     @Query('search') search?: string,
   ) {
-    return this.usersService.findAll(page, limit, { tier, role, search });
+    return this.usersService.findAll(page, limit, { role, search });
   }
 
   @Get(':id')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(client.Role.ADMIN)
   async findOne(@Param('id') userId: string) {
     return this.usersService.findOneWithStats(userId);
   }
 
-  @Patch(':id/tier')
+  @Patch(':id/credits')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
-  async updateTier(
+  @Roles(client.Role.ADMIN)
+  async updateCredits(
     @Param('id') userId: string,
-    @Body() updateTierDto: UpdateTierDto,
+    @Body('credits', ParseIntPipe) credits: number,
   ) {
-    return this.usersService.updateTier(userId, updateTierDto);
+    return this.usersService.updateCredits(userId, credits);
   }
 
   @Patch(':id/role')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(client.Role.ADMIN)
   async updateRole(
     @Param('id') userId: string,
     @Body() updateRoleDto: UpdateRoleDto,
@@ -88,7 +85,7 @@ export class UsersController {
 
   @Delete(':id')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(client.Role.ADMIN)
   async delete(@Param('id') userId: string) {
     await this.usersService.delete(userId);
     return { message: 'User deleted successfully' };

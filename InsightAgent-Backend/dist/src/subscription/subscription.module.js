@@ -10,6 +10,7 @@ exports.SubscriptionModule = void 0;
 const common_1 = require("@nestjs/common");
 const subscription_service_1 = require("./subscription.service");
 const subscription_controller_1 = require("./subscription.controller");
+const polar_webhook_controller_1 = require("./polar-webhook.controller");
 const prisma_module_1 = require("../prisma/prisma.module");
 let SubscriptionModule = class SubscriptionModule {
 };
@@ -17,7 +18,7 @@ exports.SubscriptionModule = SubscriptionModule;
 exports.SubscriptionModule = SubscriptionModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule],
-        controllers: [subscription_controller_1.SubscriptionController],
+        controllers: [subscription_controller_1.SubscriptionController, polar_webhook_controller_1.PolarWebhookController],
         providers: [subscription_service_1.SubscriptionService],
         exports: [subscription_service_1.SubscriptionService],
     })

@@ -239,7 +239,7 @@ Recommendation types:
 - anomaly: Find outliers or unusual patterns`;
         try {
             const completion = await this.groq.chat.completions.create({
-                model: 'llama-3.3-70b-versatile',
+                model: 'llama-3.1-8b-instant',
                 messages: [
                     { role: 'system', content: systemPrompt },
                     {
@@ -409,13 +409,25 @@ Recommendation types:
                 break;
             }
             catch (error) {
+                const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+                const missingRelationMatch = errorMsg.match(/relation "([^"]+)" does not exist/i);
+                if (missingRelationMatch) {
+                    let tableName = missingRelationMatch[1];
+                    if (tableName.startsWith('public.')) {
+                        tableName = tableName.substring(7);
+                    }
+                    const meta = await this.prisma.tableMetadata.findFirst({
+                        where: { projectId, tableName },
+                    });
+                    if (meta) {
+                        throw new common_1.BadRequestException(`The table dataset for "${meta.originalName}" is missing from the database (likely due to a recent schema reset or migration). Please delete the dataset "${meta.originalName}" from the sidebar and re-upload the CSV file to restore it.`);
+                    }
+                }
                 attempts++;
                 if (attempts > maxRetries) {
-                    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
                     this.logger.error(`SQL execution failed after retries: ${errorMsg}`);
                     throw new common_1.BadRequestException(`Failed to execute query: ${errorMsg}. SQL: ${currentSQL}`);
                 }
-                const errorMsg = error instanceof Error ? error.message : 'Unknown error';
                 this.logger.warn(`SQL execution failed (Attempt ${attempts}): ${errorMsg}`);
                 try {
                     currentSQL = await this.fixSQL(question, currentSQL, errorMsg);
@@ -429,9 +441,10 @@ Recommendation types:
         const { recommendations, summary } = await this.generateRecommendations(question, schemaContext, data, sql);
         const executionTime = Date.now() - startTime;
         const chartSuggestion = this.suggestChart(sql, data, requestedChartType);
+        const sanitizedData = this.sanitizeBigInt(data);
         const result = {
             sql: currentSQL,
-            data,
+            data: sanitizedData,
             rowCount: data.length,
             chartSuggestion,
             recommendations,
@@ -450,7 +463,27 @@ Recommendation types:
             throw new common_1.BadRequestException(`Table ${tableName} not found in project ${projectId}`);
         }
         const data = await this.prisma.$queryRawUnsafe(`SELECT * FROM "${tableName}" LIMIT ${limit}`);
-        return data;
+        return this.sanitizeBigInt(data);
+    }
+    sanitizeBigInt(obj) {
+        if (obj === null || obj === undefined) {
+            return obj;
+        }
+        if (typeof obj === 'bigint') {
+            const num = Number(obj);
+            return Number.isSafeInteger(num) ? num : obj.toString();
+        }
+        if (Array.isArray(obj)) {
+            return obj.map((item) => this.sanitizeBigInt(item));
+        }
+        if (typeof obj === 'object') {
+            const sanitized = {};
+            for (const key of Object.keys(obj)) {
+                sanitized[key] = this.sanitizeBigInt(obj[key]);
+            }
+            return sanitized;
+        }
+        return obj;
     }
 };
 exports.AgentService = AgentService;

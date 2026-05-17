@@ -13,7 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import type { JwtPayload } from '../auth/decorators/current-user.decorator';
+import * as client from '@prisma/client';
 
 @Controller('upload')
 @UseGuards(JwtAuthGuard)
@@ -31,7 +31,7 @@ export class UploadController {
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Body('projectId') projectId: string,
-    @CurrentUser() user: JwtPayload,
+    @CurrentUser() user: client.User,
   ) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
@@ -64,7 +64,7 @@ export class UploadController {
   async deleteTable(
     @Param('projectId') projectId: string,
     @Param('tableName') tableName: string,
-    @CurrentUser() user: JwtPayload,
+    @CurrentUser() user: client.User,
   ) {
     await this.uploadService.deleteTable(projectId, tableName, user.id);
     return {

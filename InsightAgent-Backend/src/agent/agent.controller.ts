@@ -11,7 +11,7 @@ import { AgentService } from './agent.service';
 import { QueryDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import type { JwtPayload } from '../auth/decorators/current-user.decorator';
+import * as client from '@prisma/client';
 
 @Controller('agent')
 @UseGuards(JwtAuthGuard)
@@ -21,7 +21,7 @@ export class AgentController {
   @Post('query')
   async executeQuery(
     @Body() queryDto: QueryDto,
-    @CurrentUser() user: JwtPayload,
+    @CurrentUser() user: client.User,
   ) {
     const result = await this.agentService.executeQuery(
       queryDto.projectId,
@@ -39,7 +39,7 @@ export class AgentController {
   async previewTable(
     @Param('projectId') projectId: string,
     @Param('tableName') tableName: string,
-    @CurrentUser() user: JwtPayload,
+    @CurrentUser() user: client.User,
     @Query('limit') limit?: string,
   ) {
     const data = await this.agentService.previewTable(

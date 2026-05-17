@@ -1,36 +1,29 @@
 import { SubscriptionService } from './subscription.service';
-import type { JwtPayload } from '../auth/decorators/current-user.decorator';
-import { SubscriptionTier } from '@prisma/client';
-import { TierLimits } from './subscription.constants';
+import * as client from '@prisma/client';
 export declare class SubscriptionController {
     private subscriptionService;
     constructor(subscriptionService: SubscriptionService);
-    getUsage(user: JwtPayload): Promise<{
-        tier: import("@prisma/client").$Enums.SubscriptionTier;
+    getUsage(user: client.User): Promise<{
+        creditsBalance: number;
         projects: {
             used: number;
             limit: number;
         };
         queries: {
-            used: number;
-            limit: number;
-            resetAt: Date;
+            totalExecuted: number;
         };
         fileSize: {
             limit: number;
         };
     }>;
     getPlans(): Promise<{
-        tier: string;
-        limits: TierLimits;
+        id: string;
+        name: string;
+        credits: number;
         price: number;
+        description: string;
     }[]>;
-    updatePlan(tier: SubscriptionTier, data: {
-        limits?: Partial<TierLimits>;
-        price?: number;
-    }): Promise<{
-        tier: import("@prisma/client").$Enums.SubscriptionTier;
-        limits: TierLimits;
-        price: number;
+    checkout(user: client.User, planId: string): Promise<{
+        url: string | null;
     }>;
 }

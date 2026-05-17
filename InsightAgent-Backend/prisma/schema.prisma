@@ -13,24 +13,23 @@ enum Role {
   ADMIN
 }
 
-enum SubscriptionTier {
-  FREE
-  PRO
-  ENTERPRISE
+enum TransactionType {
+  USAGE
+  PURCHASE
+  REFUND
 }
 
 model User {
-  id             String           @id @default(uuid())
-  email          String           @unique
-  passwordHash   String
+  id             String              @id @default(uuid())
+  clerkUserId    String              @unique
+  email          String              @unique
   name           String?
-  role           Role             @default(USER)
-  tier           SubscriptionTier @default(FREE)
+  role           Role                @default(USER)
+  creditsBalance Int                 @default(5)
   projects       Project[]
-  queriesUsed    Int              @default(0)
-  queriesResetAt DateTime         @default(now())
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  transactions   CreditTransaction[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
 }
 
 model Project {
@@ -55,4 +54,15 @@ model TableMetadata {
   createdAt    DateTime @default(now())
 
   @@index([projectId])
+}
+
+model CreditTransaction {
+  id        String          @id @default(uuid())
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount    Int
+  type      TransactionType
+  createdAt DateTime        @default(now())
+
+  @@index([userId])
 }

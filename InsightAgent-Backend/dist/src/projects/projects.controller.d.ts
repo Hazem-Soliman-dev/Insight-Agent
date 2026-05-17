@@ -1,17 +1,17 @@
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto, UpdateProjectDto } from './dto';
-import type { JwtPayload } from '../auth/decorators/current-user.decorator';
+import * as client from '@prisma/client';
 export declare class ProjectsController {
     private readonly projectsService;
     constructor(projectsService: ProjectsService);
-    create(createProjectDto: CreateProjectDto, user: JwtPayload): Promise<{
+    create(createProjectDto: CreateProjectDto, user: client.User): Promise<{
         name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
     }>;
-    findAll(user: JwtPayload): Promise<({
+    findAll(user: client.User): Promise<({
         tables: {
             id: string;
             createdAt: Date;
@@ -27,7 +27,7 @@ export declare class ProjectsController {
         updatedAt: Date;
         userId: string;
     })[]>;
-    findOne(id: string, user: JwtPayload): Promise<{
+    findOne(id: string, user: client.User): Promise<{
         tables: {
             id: string;
             createdAt: Date;
@@ -43,7 +43,7 @@ export declare class ProjectsController {
         updatedAt: Date;
         userId: string;
     }>;
-    getProjectTables(id: string, user: JwtPayload): Promise<{
+    getProjectTables(id: string, user: client.User): Promise<{
         id: string;
         createdAt: Date;
         projectId: string;
@@ -51,7 +51,7 @@ export declare class ProjectsController {
         originalName: string;
         columns: string[];
     }[]>;
-    update(id: string, updateProjectDto: UpdateProjectDto, user: JwtPayload): Promise<{
+    update(id: string, updateProjectDto: UpdateProjectDto, user: client.User): Promise<{
         tables: {
             id: string;
             createdAt: Date;
@@ -67,7 +67,7 @@ export declare class ProjectsController {
         updatedAt: Date;
         userId: string;
     }>;
-    remove(id: string, user: JwtPayload): Promise<{
+    remove(id: string, user: client.User): Promise<{
         name: string;
         id: string;
         createdAt: Date;

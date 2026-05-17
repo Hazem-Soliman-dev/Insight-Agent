@@ -270,7 +270,7 @@ Recommendation types:
 
     try {
       const completion = await this.groq.chat.completions.create({
-        model: 'llama-3.3-70b-versatile',
+        model: 'llama-3.1-8b-instant',
         messages: [
           { role: 'system', content: systemPrompt },
           {
@@ -531,18 +531,38 @@ Recommendation types:
         data = await this.prisma.$queryRawUnsafe(currentSQL);
         break; // Success
       } catch (error) {
+        const errorMsg =
+          error instanceof Error ? error.message : 'Unknown error';
+
+        // Check if error is due to a missing relation (PostgreSQL 42P01 - table doesn't exist in DB)
+        const missingRelationMatch = errorMsg.match(
+          /relation "([^"]+)" does not exist/i,
+        );
+        if (missingRelationMatch) {
+          let tableName = missingRelationMatch[1];
+          if (tableName.startsWith('public.')) {
+            tableName = tableName.substring(7); // Remove "public." prefix
+          }
+
+          const meta = await this.prisma.tableMetadata.findFirst({
+            where: { projectId, tableName },
+          });
+
+          if (meta) {
+            throw new BadRequestException(
+              `The table dataset for "${meta.originalName}" is missing from the database (likely due to a recent schema reset or migration). Please delete the dataset "${meta.originalName}" from the sidebar and re-upload the CSV file to restore it.`,
+            );
+          }
+        }
+
         attempts++;
         if (attempts > maxRetries) {
-          const errorMsg =
-            error instanceof Error ? error.message : 'Unknown error';
           this.logger.error(`SQL execution failed after retries: ${errorMsg}`);
           throw new BadRequestException(
             `Failed to execute query: ${errorMsg}. SQL: ${currentSQL}`,
           );
         }
 
-        const errorMsg =
-          error instanceof Error ? error.message : 'Unknown error';
         this.logger.warn(
           `SQL execution failed (Attempt ${attempts}): ${errorMsg}`,
         );
@@ -573,9 +593,13 @@ Recommendation types:
     // Suggest chart type
     const chartSuggestion = this.suggestChart(sql, data, requestedChartType);
 
+    const sanitizedData = this.sanitizeBigInt(data) as Record<
+      string,
+      unknown
+    >[];
     const result = {
       sql: currentSQL, // Return the actually executed SQL (it might have been fixed)
-      data,
+      data: sanitizedData,
       rowCount: data.length,
       chartSuggestion,
       recommendations,
@@ -616,6 +640,35 @@ Recommendation types:
       `SELECT * FROM "${tableName}" LIMIT ${limit}`,
     );
 
-    return data as Record<string, unknown>[];
+    return this.sanitizeBigInt(data) as Record<string, unknown>[];
+  }
+
+  /**
+   * Recursively convert any BigInt values to safe JSON numbers or strings
+   */
+  private sanitizeBigInt(obj: unknown): unknown {
+    if (obj === null || obj === undefined) {
+      return obj;
+    }
+
+    if (typeof obj === 'bigint') {
+      const num = Number(obj);
+      return Number.isSafeInteger(num) ? num : obj.toString();
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map((item: unknown) => this.sanitizeBigInt(item));
+    }
+
+    if (typeof obj === 'object') {
+      const sanitized: Record<string, unknown> = {};
+      const record = obj as Record<string, unknown>;
+      for (const key of Object.keys(record)) {
+        sanitized[key] = this.sanitizeBigInt(record[key]);
+      }
+      return sanitized;
+    }
+
+    return obj;
   }
 }
