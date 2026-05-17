@@ -127,7 +127,9 @@ let UsersService = class UsersService {
             }),
             this.prisma.user.count({ where: { creditsBalance: { lte: 5 } } }),
             this.prisma.user.count({ where: { creditsBalance: { gt: 5, lte: 20 } } }),
-            this.prisma.user.count({ where: { creditsBalance: { gt: 20, lte: 100 } } }),
+            this.prisma.user.count({
+                where: { creditsBalance: { gt: 20, lte: 100 } },
+            }),
             this.prisma.user.count({ where: { creditsBalance: { gt: 100 } } }),
         ]);
         const queryStats = await this.prisma.creditTransaction.count({

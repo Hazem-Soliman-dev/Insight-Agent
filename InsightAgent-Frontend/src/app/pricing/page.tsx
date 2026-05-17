@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Brain, Check, Sparkles, Loader2, Coins } from 'lucide-react';
+import { Check, Sparkles, Loader2, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Navbar } from '@/components/Navbar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth';
 import api from '@/lib/api';
@@ -18,7 +18,7 @@ interface Plan {
 }
 
 export default function PricingPage() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
@@ -78,34 +78,8 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 text-foreground">
-      {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center">
-              <Brain className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="font-bold text-xl">InsightAgent</h1>
-              <p className="text-xs text-muted-foreground">Agentic Business Intelligence</p>
-            </div>
-          </Link>
-          <div className="flex items-center gap-3">
-            {user && (
-              <Link
-                href="/pricing"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 transition-colors text-xs font-semibold text-indigo-400"
-              >
-                <Coins className="h-3.5 w-3.5 animate-pulse text-indigo-400" />
-                <span>{user.creditsBalance} credits</span>
-              </Link>
-            )}
-            <Button variant="ghost" asChild>
-              <Link href="/">Back to Projects</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+      {/* Unified Premium Navbar */}
+      <Navbar user={user} logout={logout} />
 
       {/* Pricing Section */}
       <main className="container mx-auto px-4 py-16">

@@ -49,7 +49,8 @@ let JwtAuthGuard = JwtAuthGuard_1 = class JwtAuthGuard {
                     if (!email) {
                         throw new Error('User has no email address on Clerk');
                     }
-                    const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || null;
+                    const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() ||
+                        null;
                     localUser = await this.prisma.user.create({
                         data: {
                             clerkUserId,

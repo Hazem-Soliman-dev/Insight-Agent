@@ -6,7 +6,7 @@ export declare class PolarWebhookController {
     constructor(prisma: PrismaService);
     handleWebhook(req: Request & {
         rawBody?: Buffer;
-    }, headers: any): Promise<{
+    }, headers: Record<string, string>): Promise<{
         received: boolean;
     }>;
     private handleOrderPaid;

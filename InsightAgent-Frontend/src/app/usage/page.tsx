@@ -4,21 +4,13 @@ import { useEffect, useState } from 'react';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Navbar } from '@/components/Navbar';
 import { Badge } from '@/components/ui/badge';
-import { Database, Zap, HardDrive, TrendingUp, Brain, User, LogOut, BarChart3, CreditCard, Shield, Coins } from 'lucide-react';
+import { Database, Zap, HardDrive, TrendingUp, Coins } from 'lucide-react';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 interface UsageData {
   creditsBalance: number;
@@ -36,7 +28,6 @@ interface UsageData {
 
 export default function UsageDashboard() {
   const { user, logout } = useAuth();
-  const router = useRouter();
   const [usage, setUsage] = useState<UsageData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -78,74 +69,8 @@ export default function UsageDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 text-foreground">
-      {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center">
-              <Brain className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="font-bold text-xl">InsightAgent</h1>
-              <p className="text-xs text-muted-foreground">Agentic Business Intelligence</p>
-            </div>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" asChild className="hidden md:flex">
-                <Link href="/">Projects</Link>
-            </Button>
-
-            {user && (
-              <Link
-                href="/pricing"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 transition-colors text-xs font-semibold text-indigo-400"
-              >
-                <Coins className="h-3.5 w-3.5 animate-pulse text-indigo-400" />
-                <span>{user.creditsBalance} credits</span>
-              </Link>
-            )}
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col">
-                    <span className="font-medium text-sm">{user?.name || 'User'}</span>
-                    <span className="text-xs text-muted-foreground font-normal">{user?.email}</span>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push('/usage')}>
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  Usage & Limits
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push('/pricing')}>
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Pricing
-                </DropdownMenuItem>
-                {user?.role === 'ADMIN' && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => router.push('/admin')}>
-                      <Shield className="mr-2 h-4 w-4" />
-                      Admin Dashboard
-                    </DropdownMenuItem>
-                  </>
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </header>
+      {/* Unified Premium Navbar */}
+      <Navbar user={user} logout={logout} />
 
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto space-y-8">

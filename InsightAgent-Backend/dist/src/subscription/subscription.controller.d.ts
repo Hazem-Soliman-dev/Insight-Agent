@@ -16,13 +16,13 @@ export declare class SubscriptionController {
             limit: number;
         };
     }>;
-    getPlans(): Promise<{
+    getPlans(): {
         id: string;
         name: string;
         credits: number;
         price: number;
         description: string;
-    }[]>;
+    }[];
     checkout(user: client.User, planId: string): Promise<{
         url: string | null;
     }>;

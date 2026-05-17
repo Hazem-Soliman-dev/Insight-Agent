@@ -62,6 +62,7 @@ let SubscriptionService = class SubscriptionService {
         });
     }
     async checkFileSizeLimit(userId, fileSizeMB) {
+        await Promise.resolve();
         if (fileSizeMB > this.MAX_FILE_SIZE_MB) {
             throw new common_1.PayloadTooLargeException(`File size exceeds limit. Maximum file size allowed is ${this.MAX_FILE_SIZE_MB} MB.`);
         }
@@ -102,21 +103,21 @@ let SubscriptionService = class SubscriptionService {
                 id: 'credits-starter',
                 name: 'Starter Credits Pack',
                 credits: 20,
-                price: 5.00,
+                price: 5.0,
                 description: 'Perfect for trying out new insights',
             },
             {
                 id: 'credits-growth',
                 name: 'Growth Credits Pack',
                 credits: 100,
-                price: 19.00,
+                price: 19.0,
                 description: 'Best for regular analysis',
             },
             {
                 id: 'credits-power',
                 name: 'Power Credits Pack',
                 credits: 500,
-                price: 59.00,
+                price: 59.0,
                 description: 'Ideal for power users and teams',
             },
         ];

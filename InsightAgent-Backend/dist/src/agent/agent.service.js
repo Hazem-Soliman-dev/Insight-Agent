@@ -478,8 +478,9 @@ Recommendation types:
         }
         if (typeof obj === 'object') {
             const sanitized = {};
-            for (const key of Object.keys(obj)) {
-                sanitized[key] = this.sanitizeBigInt(obj[key]);
+            const record = obj;
+            for (const key of Object.keys(record)) {
+                sanitized[key] = this.sanitizeBigInt(record[key]);
             }
             return sanitized;
         }

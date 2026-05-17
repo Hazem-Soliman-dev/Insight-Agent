@@ -57,13 +57,13 @@ let SubscriptionController = class SubscriptionController {
         this.subscriptionService = subscriptionService;
     }
     async getUsage(user) {
-        return this.subscriptionService.getUserUsage(user.id);
+        return await this.subscriptionService.getUserUsage(user.id);
     }
-    async getPlans() {
+    getPlans() {
         return this.subscriptionService.getPlans();
     }
     async checkout(user, planId) {
-        return this.subscriptionService.createCheckoutSession(user.id, planId);
+        return await this.subscriptionService.createCheckoutSession(user.id, planId);
     }
 };
 exports.SubscriptionController = SubscriptionController;
@@ -78,7 +78,7 @@ __decorate([
     (0, common_1.Get)('plans'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], SubscriptionController.prototype, "getPlans", null);
 __decorate([
     (0, common_1.Post)('checkout'),

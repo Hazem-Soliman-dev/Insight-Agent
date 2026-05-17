@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, Coins } from 'lucide-react';
-import Link from 'next/link';
+import { Loader2, Brain } from 'lucide-react';
+import { Navbar } from '@/components/Navbar';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -34,7 +34,7 @@ export default function ProjectPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.id as string;
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -106,34 +106,20 @@ export default function ProjectPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-20 shrink-0">
-        <div className="flex items-center gap-4 px-4 py-3 justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => router.push('/')}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <h1 className="font-semibold">{project.name}</h1>
-          </div>
-          <div className="flex items-center gap-3">
-            {user && (
-              <Link
-                href="/pricing"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 transition-colors text-xs font-semibold text-indigo-400"
-              >
-                <Coins className="h-3.5 w-3.5 animate-pulse text-indigo-400" />
-                <span>{user.creditsBalance} credits</span>
-              </Link>
-            )}
-
-            {/* Mobile Menu Toggle */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="md:hidden"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
+    <div className="min-h-screen flex flex-col bg-background h-screen overflow-hidden">
+      {/* Unified Premium Navbar */}
+      <Navbar
+        user={user}
+        logout={logout}
+        title={project.name}
+        onBack={() => router.push('/')}
+        customMobileToggle={
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden h-9 w-9 rounded-xl border border-zinc-800 bg-zinc-900/30 hover:bg-zinc-800 text-zinc-300 hover:text-zinc-100"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -144,63 +130,75 @@ export default function ProjectPage() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-5 w-5"
+              className="h-4.5 w-4.5"
             >
               <line x1="4" x2="20" y1="12" y2="12" />
               <line x1="4" x2="20" y1="6" y2="6" />
               <line x1="4" x2="20" y1="18" y2="18" />
             </svg>
           </Button>
-        </div>
-      </div>
-      </header>
+        }
+      />
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-visible relative">
+      <div className="flex-1 flex overflow-hidden relative">
         {/* Desktop Sidebar */}
-        <aside className="hidden md:flex w-72 border-r flex-col bg-muted/20 sticky top-[57px] h-[calc(100vh-57px)]">
+        <aside className="hidden md:flex w-72 border-r border-zinc-900 flex-col bg-zinc-950/20 shrink-0 h-full">
           <div className="p-4">
             <FileUpload
               projectId={projectId}
               onUploadComplete={handleUploadComplete}
             />
           </div>
-          <Separator />
+          <Separator className="bg-zinc-900" />
           <div className="flex-1 overflow-auto">
             <ProjectSidebar
-              tables={project.tables}
+              tables={project.tables ?? []}
               onDeleteTable={handleDeleteTable}
               onPreviewTable={handlePreviewTable}
             />
           </div>
         </aside>
 
-        {/* Mobile Sidebar Overlay */}
+        {/* Mobile Sidebar Overlay / Drawer */}
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-30 md:hidden">
-            {/* 
-              Backdrop 
-              Using key to force remount if needed, but simple conditional rendering works.
-              Clicking outside closes it.
-            */}
-            <div 
-              className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+          <div className="fixed inset-0 z-50 md:hidden flex justify-start">
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 bg-zinc-950/80 backdrop-blur-sm transition-opacity duration-300"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-            
-            {/* Sidebar Content */}
-            <div className="absolute inset-y-0 left-0 w-[80%] max-w-sm bg-background border-r shadow-lg flex flex-col pt-16 animate-in slide-in-from-left">
-               {/* Close button inside sidebar is optional since backdrop handles it, or toggle in header handles it */}
+
+            {/* Drawer Content */}
+            <div className="relative w-[290px] h-full bg-zinc-950 border-r border-zinc-900 shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-300">
+              {/* Drawer Header */}
+              <div className="p-4 flex items-center justify-between border-b border-zinc-900 bg-zinc-900/10">
+                <div className="flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                    <Brain className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="font-extrabold text-xs text-zinc-200 tracking-tight">Project Panel</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line></svg>
+                </Button>
+              </div>
+
               <div className="p-4">
                 <FileUpload
                   projectId={projectId}
                   onUploadComplete={handleUploadComplete}
                 />
               </div>
-              <Separator />
+              <Separator className="bg-zinc-900" />
               <div className="flex-1 overflow-auto">
                 <ProjectSidebar
-                  tables={project.tables}
+                  tables={project.tables ?? []}
                   onDeleteTable={handleDeleteTable}
                   onPreviewTable={handlePreviewTable}
                 />
@@ -210,10 +208,10 @@ export default function ProjectPage() {
         )}
 
         {/* Chat Area */}
-        <main className="flex-1">
+        <main className="flex-1 h-full overflow-hidden flex flex-col">
           <ChatInterface
             projectId={projectId}
-            hasData={project.tables.length > 0}
+            hasData={(project.tables ?? []).length > 0}
           />
         </main>
       </div>
