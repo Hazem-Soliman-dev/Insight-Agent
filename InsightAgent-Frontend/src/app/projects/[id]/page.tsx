@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Brain, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Coins } from 'lucide-react';
+import Link from 'next/link';
+import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -32,6 +34,7 @@ export default function ProjectPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.id as string;
+  const { user } = useAuth();
 
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,28 +45,28 @@ export default function ProjectPage() {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    loadProject();
-  }, [projectId]);
-
-  const loadProject = async () => {
+  const loadProject = useCallback(async () => {
     try {
       const data = await projectsApi.getOne(projectId);
       setProject(data);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load project');
       router.push('/');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [projectId, router]);
+
+  useEffect(() => {
+    loadProject();
+  }, [loadProject]);
 
   const handleUploadComplete = useCallback((result: UploadResult) => {
     // Reload project to get updated table list
     loadProject();
     toast.success(`Uploaded ${result.originalName} (${result.rowCount} rows)`);
     setIsMobileMenuOpen(false);
-  }, []);
+  }, [loadProject]);
 
   const handleDeleteTable = async (tableName: string) => {
     if (!confirm('Are you sure you want to delete this table?')) return;
@@ -72,7 +75,7 @@ export default function ProjectPage() {
       await uploadApi.deleteTable(projectId, tableName);
       await loadProject();
       toast.success('Table deleted');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete table');
     }
   };
@@ -83,7 +86,7 @@ export default function ProjectPage() {
       const data = await agentApi.previewTable(projectId, tableName);
       setPreviewData({ tableName, data });
       setIsMobileMenuOpen(false);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load preview');
     } finally {
       setIsPreviewLoading(false);
@@ -113,14 +116,24 @@ export default function ProjectPage() {
             </Button>
             <h1 className="font-semibold">{project.name}</h1>
           </div>
-          
-          {/* Mobile Menu Toggle */}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="md:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
+          <div className="flex items-center gap-3">
+            {user && (
+              <Link
+                href="/pricing"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 transition-colors text-xs font-semibold text-indigo-400"
+              >
+                <Coins className="h-3.5 w-3.5 animate-pulse text-indigo-400" />
+                <span>{user.creditsBalance} credits</span>
+              </Link>
+            )}
+
+            {/* Mobile Menu Toggle */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="md:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -139,6 +152,7 @@ export default function ProjectPage() {
             </svg>
           </Button>
         </div>
+      </div>
       </header>
 
       {/* Main Content */}

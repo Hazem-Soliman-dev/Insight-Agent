@@ -16,43 +16,34 @@ const THINKING_STEPS: Omit<ThinkingStep, 'status'>[] = [
 ];
 
 export function ThinkingUI({ isThinking }: ThinkingUIProps) {
-  const [steps, setSteps] = useState<ThinkingStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    if (isThinking) {
-      setSteps(
-        THINKING_STEPS.map((step, idx) => ({
-          ...step,
-          status: idx === 0 ? 'active' : 'pending',
-        }))
-      );
-      setCurrentStep(0);
+    if (!isThinking) return;
 
-      const interval = setInterval(() => {
-        setCurrentStep((prev) => {
-          if (prev < THINKING_STEPS.length - 1) {
-            setSteps((prevSteps) =>
-              prevSteps.map((step, idx) => ({
-                ...step,
-                status:
-                  idx < prev + 1 ? 'complete' : idx === prev + 1 ? 'active' : 'pending',
-              }))
-            );
-            return prev + 1;
-          }
-          return prev;
-        });
-      }, 800);
+    const interval = setInterval(() => {
+      setCurrentStep((prev) => {
+        if (prev < THINKING_STEPS.length - 1) {
+          return prev + 1;
+        }
+        return prev;
+      });
+    }, 800);
 
-      return () => clearInterval(interval);
-    } else {
-      setSteps([]);
-      setCurrentStep(0);
-    }
+    return () => clearInterval(interval);
   }, [isThinking]);
 
   if (!isThinking) return null;
+
+  const steps: ThinkingStep[] = THINKING_STEPS.map((step, idx) => {
+    let status: ThinkingStep['status'] = 'pending';
+    if (idx < currentStep) {
+      status = 'complete';
+    } else if (idx === currentStep) {
+      status = 'active';
+    }
+    return { ...step, status };
+  });
 
   const getIcon = (stepId: string) => {
     switch (stepId) {

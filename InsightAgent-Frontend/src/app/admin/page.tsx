@@ -25,7 +25,7 @@ export default function AdminDashboard() {
     try {
       const { data } = await api.get('/users/stats');
       setStats(data);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load statistics');
     } finally {
       setIsLoading(false);
@@ -118,12 +118,12 @@ export default function AdminDashboard() {
       {/* Tier Distribution */}
       <Card>
         <CardHeader>
-          <CardTitle>Subscription Tier Distribution</CardTitle>
-          <CardDescription>Breakdown of users by subscription tier</CardDescription>
+          <CardTitle>User Credit Distribution</CardTitle>
+          <CardDescription>Breakdown of users by credit balance ranges</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {Object.entries(stats.tierDistribution).map(([tier, count]) => {
+            {Object.entries(stats.tierDistribution || {}).map(([tier, count]) => {
               const percentage = (count / stats.totalUsers) * 100;
               return (
                 <div key={tier} className="space-y-2">

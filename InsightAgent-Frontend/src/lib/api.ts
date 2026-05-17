@@ -24,7 +24,13 @@ function deleteCookie(name: string) {
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('accessToken');
+      const getClerkToken = () => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; __session=`);
+        if (parts.length === 2) return parts.pop()?.split(';').shift();
+        return null;
+      };
+      const token = getClerkToken();
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

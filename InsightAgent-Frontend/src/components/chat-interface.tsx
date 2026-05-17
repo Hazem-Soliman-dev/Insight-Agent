@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, User, Bot, Sparkles } from 'lucide-react';
+import { Send, User, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { ThinkingUI } from './thinking-ui';
 import { ResultDisplay } from './result-display';
 import { agentApi } from '@/lib/api';
-import type { Message, QueryResult } from '@/types';
+import { useAuth } from '@/lib/auth';
+import type { Message } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 
 interface ChatInterfaceProps {
@@ -17,6 +17,7 @@ interface ChatInterfaceProps {
 }
 
 export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
+  const { refreshUser } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -54,11 +55,24 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+      refreshUser();
     } catch (error) {
+      let errorMsg = 'An error occurred while processing your query.';
+      const apiError = error as { response?: { data?: { message?: unknown } } };
+      if (apiError?.response?.data?.message) {
+        errorMsg = typeof apiError.response.data.message === 'string'
+          ? apiError.response.data.message
+          : Array.isArray(apiError.response.data.message)
+            ? String(apiError.response.data.message[0])
+            : JSON.stringify(apiError.response.data.message);
+      } else if (error instanceof Error) {
+        errorMsg = error.message;
+      }
+
       const errorMessage: Message = {
         id: uuidv4(),
         role: 'assistant',
-        content: error instanceof Error ? error.message : 'An error occurred while processing your query.',
+        content: errorMsg,
         timestamp: new Date(),
       };
 
@@ -120,7 +134,7 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
             </div>
           )}
 
-          {messages.map((message) => (
+          {messages.map((message, idx) => (
             <div
               key={message.id}
               className={`flex gap-3 ${
@@ -145,6 +159,12 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
                 {message.queryResult && (
                   <ResultDisplay 
                     result={message.queryResult} 
+                    question={
+                      messages
+                        .slice(0, idx)
+                        .reverse()
+                        .find((m) => m.role === 'user')?.content || ''
+                    }
                     onRecommendationClick={handleQuerySubmit}
                   />
                 )}

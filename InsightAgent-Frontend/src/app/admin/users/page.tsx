@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -57,11 +57,7 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState('');
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadUsers();
-  }, [page, search, tierFilter, roleFilter]);
-
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     try {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -75,20 +71,25 @@ export default function UsersPage() {
       const { data } = await api.get(`/users?${params.toString()}`);
       setUsers(data.users);
       setTotalPages(data.pagination.totalPages);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load users');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, search, tierFilter, roleFilter]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   const handleTierChange = async (userId: string, newTier: string) => {
     try {
       await api.patch(`/users/${userId}/tier`, { tier: newTier });
       toast.success('User tier updated');
       loadUsers();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to update tier');
+    } catch (error) {
+      const apiError = error as { response?: { data?: { message?: string } } };
+      toast.error(apiError.response?.data?.message || 'Failed to update tier');
     }
   };
 
@@ -97,8 +98,9 @@ export default function UsersPage() {
       await api.patch(`/users/${userId}/role`, { role: newRole });
       toast.success('User role updated');
       loadUsers();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to update role');
+    } catch (error) {
+      const apiError = error as { response?: { data?: { message?: string } } };
+      toast.error(apiError.response?.data?.message || 'Failed to update role');
     }
   };
 
@@ -110,8 +112,9 @@ export default function UsersPage() {
       toast.success('User deleted successfully');
       setDeleteUserId(null);
       loadUsers();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to delete user');
+    } catch (error) {
+      const apiError = error as { response?: { data?: { message?: string } } };
+      toast.error(apiError.response?.data?.message || 'Failed to delete user');
     }
   };
 

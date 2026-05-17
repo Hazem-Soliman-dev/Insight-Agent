@@ -36,11 +36,13 @@ import {
   Scatter,
   LabelList,
 } from 'recharts';
-import { TableIcon, BarChart3, Code, Lightbulb, TrendingUp, Search, GitCompare, AlertTriangle, Sparkles } from 'lucide-react';
+import { TableIcon, BarChart3, Code, Lightbulb, TrendingUp, Search, GitCompare, AlertTriangle, Sparkles, FileText } from 'lucide-react';
 import type { QueryResult, Recommendation } from '@/types';
+import { toast } from 'sonner';
 
 interface ResultDisplayProps {
   result: QueryResult;
+  question?: string;
   onRecommendationClick?: (question: string) => void; 
 }
 
@@ -86,10 +88,361 @@ const getRecommendationColor = (type: Recommendation['type']) => {
   }
 };
 
-export function ResultDisplay({ result, onRecommendationClick }: ResultDisplayProps) {
+export function ResultDisplay({ result, question, onRecommendationClick }: ResultDisplayProps) {
   const { data, sql, rowCount, chartSuggestion, recommendations, summary, executionTime } = result;
   const [activeBarIndex, setActiveBarIndex] = useState<number | null>(null);
   const [activePieIndex, setActivePieIndex] = useState<number | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const uniqueId = React.useId().replace(/:/g, '');
+
+  const handleExportPDF = () => {
+    try {
+      setIsExporting(true);
+      
+      const chartEl = document.getElementById(`chart-${uniqueId}`);
+      let chartSvgHtml = '';
+      if (chartEl) {
+        const svgEl = chartEl.querySelector('svg');
+        if (svgEl) {
+          const clonedSvg = svgEl.cloneNode(true) as SVGElement;
+          clonedSvg.setAttribute('width', '100%');
+          clonedSvg.setAttribute('height', '320');
+          clonedSvg.style.maxWidth = '100%';
+          clonedSvg.style.height = 'auto';
+          
+          const cells = clonedSvg.querySelectorAll('.recharts-rectangle, .recharts-pie-sector, .recharts-line, .recharts-area');
+          cells.forEach((cell) => {
+            const currentFill = cell.getAttribute('fill');
+            const currentStroke = cell.getAttribute('stroke');
+            if (currentFill && currentFill.includes('var(')) {
+              const matches = currentFill.match(/--chart-\d/);
+              if (matches) {
+                const colorMap: Record<string, string> = {
+                  '--chart-1': '#4f46e5',
+                  '--chart-2': '#10b981',
+                  '--chart-3': '#f59e0b',
+                  '--chart-4': '#ec4899',
+                  '--chart-5': '#06b6d4',
+                };
+                cell.setAttribute('fill', colorMap[matches[0]] || '#4f46e5');
+              }
+            }
+            if (currentStroke && currentStroke.includes('var(')) {
+              const matches = currentStroke.match(/--chart-\d/);
+              if (matches) {
+                const colorMap: Record<string, string> = {
+                  '--chart-1': '#4f46e5',
+                  '--chart-2': '#10b981',
+                  '--chart-3': '#f59e0b',
+                  '--chart-4': '#ec4899',
+                  '--chart-5': '#06b6d4',
+                };
+                cell.setAttribute('stroke', colorMap[matches[0]] || '#4f46e5');
+              }
+            }
+          });
+          chartSvgHtml = clonedSvg.outerHTML;
+        }
+      }
+
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        toast.error('Pop-up blocked! Please allow pop-ups to download reports.');
+        setIsExporting(false);
+        return;
+      }
+
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Insight Diagram & SQL Report - ${new Date().toLocaleDateString()}</title>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+            <style>
+              :root {
+                --primary: #4f46e5;
+                --primary-light: #e0e7ff;
+                --text-main: #0f172a;
+                --text-muted: #475569;
+                --border-color: #e2e8f0;
+                --bg-light: #f8fafc;
+                --bg-card: #ffffff;
+              }
+              
+              * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+              }
+
+              body {
+                font-family: 'Inter', sans-serif;
+                color: var(--text-main);
+                background-color: var(--bg-light);
+                padding: 40px;
+                line-height: 1.5;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+              }
+
+              .container {
+                max-width: 900px;
+                margin: 0 auto;
+                background: var(--bg-card);
+                padding: 40px;
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                border: 1px solid var(--border-color);
+              }
+
+              .header-bar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 2px solid var(--primary);
+                padding-bottom: 20px;
+                margin-bottom: 30px;
+              }
+
+              .logo-area {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+              }
+
+              .logo-icon {
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                background: linear-gradient(135deg, var(--primary), #3b82f6);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: 700;
+                font-size: 18px;
+                font-family: 'Outfit', sans-serif;
+              }
+
+              .logo-text {
+                font-family: 'Outfit', sans-serif;
+                font-size: 22px;
+                font-weight: 700;
+                color: var(--text-main);
+              }
+
+              .logo-subtitle {
+                font-size: 12px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                margin-top: -2px;
+              }
+
+              .meta-area {
+                text-align: right;
+                font-size: 12px;
+                color: var(--text-muted);
+              }
+
+              .report-title {
+                font-family: 'Outfit', sans-serif;
+                font-size: 28px;
+                font-weight: 700;
+                color: var(--text-main);
+                margin-bottom: 20px;
+              }
+
+              .question-box {
+                background-color: var(--bg-light);
+                border-left: 4px solid var(--primary);
+                padding: 16px 20px;
+                border-radius: 0 12px 12px 0;
+                margin-bottom: 24px;
+                font-style: italic;
+                color: var(--text-main);
+                font-size: 15px;
+              }
+
+              .question-label {
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 10px;
+                letter-spacing: 0.05em;
+                color: var(--primary);
+                margin-bottom: 4px;
+                font-family: 'Outfit', sans-serif;
+                font-style: normal;
+              }
+
+              h3 {
+                font-family: 'Outfit', sans-serif;
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-main);
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              }
+
+              .chart-section {
+                background: white;
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 24px;
+                margin-bottom: 30px;
+                text-align: center;
+                page-break-inside: avoid;
+              }
+
+              .chart-title {
+                font-family: 'Outfit', sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-muted);
+                margin-bottom: 16px;
+              }
+
+              .chart-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 320px;
+                width: 100%;
+              }
+
+              .sql-section {
+                background-color: #0f172a;
+                color: #f8fafc;
+                padding: 20px;
+                border-radius: 12px;
+                font-family: monospace;
+                font-size: 13px;
+                line-height: 1.5;
+                margin-bottom: 30px;
+                overflow-x: auto;
+                border: 1px solid #1e293b;
+                page-break-inside: avoid;
+              }
+
+              .sql-label {
+                font-size: 11px;
+                color: #94a3b8;
+                margin-bottom: 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                font-weight: 600;
+              }
+
+              .footer {
+                margin-top: 40px;
+                padding-top: 20px;
+                border-top: 1px solid var(--border-color);
+                text-align: center;
+                font-size: 11px;
+                color: var(--text-muted);
+              }
+
+              @media print {
+                body {
+                  background-color: white;
+                  padding: 0;
+                }
+                .container {
+                  box-shadow: none;
+                  border: none;
+                  padding: 0;
+                  max-width: 100%;
+                }
+                .sql-section {
+                  background-color: #f8fafc !important;
+                  color: #0f172a !important;
+                  border-color: var(--border-color) !important;
+                }
+                .sql-label {
+                  color: var(--text-muted) !important;
+                }
+                @page {
+                  margin: 20mm 15mm 20mm 15mm;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header-bar">
+                <div class="logo-area">
+                  <div class="logo-icon">I</div>
+                  <div>
+                    <div class="logo-text">InsightAgent</div>
+                    <div class="logo-subtitle">Data Intelligence Platform</div>
+                  </div>
+                </div>
+                <div class="meta-area">
+                  <div>Report ID: IA-${Math.floor(Math.random() * 900000 + 100000)}</div>
+                  <div>Generated: ${new Date().toLocaleDateString()}</div>
+                  <div>Execution Time: ${executionTime}ms</div>
+                </div>
+              </div>
+
+              <div class="report-title">Visual Query & SQL Analysis Report</div>
+
+              ${question ? `
+                <div class="question-box">
+                  <div class="question-label">Analysis Objective / Query Asked</div>
+                  ${question}
+                </div>
+              ` : ''}
+
+              ${chartSvgHtml ? `
+                <div class="chart-section">
+                  <div class="chart-title">${chartSuggestion.title || 'Visual Analysis'}</div>
+                  <div class="chart-container">
+                    ${chartSvgHtml}
+                  </div>
+                </div>
+              ` : `
+                <div class="chart-section">
+                  <p class="no-data" style="padding: 40px; font-style: normal; color: var(--text-muted);">
+                    No chart available for this query. Previewing the database SQL execution query below.
+                  </p>
+                </div>
+              `}
+
+              <div class="sql-section">
+                <div class="sql-label">Executed Database Query (SQL)</div>
+                ${sql}
+              </div>
+
+              <div class="footer">
+                This dynamic visual report was generated automatically by InsightAgent. 
+                All calculations and visual outputs should be cross-referenced with your standard operating data.
+              </div>
+            </div>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+
+      printWindow.focus();
+      printWindow.onafterprint = () => {
+        printWindow.close();
+      };
+      
+      setTimeout(() => {
+        printWindow.print();
+        setIsExporting(false);
+      }, 600);
+      
+    } catch (error) {
+      console.error('PDF export failed:', error);
+      toast.error('Failed to generate printable PDF');
+      setIsExporting(false);
+    }
+  };
 
   if (data.length === 0) {
     return (
@@ -121,7 +474,7 @@ export function ResultDisplay({ result, onRecommendationClick }: ResultDisplayPr
 
     const ChartWrapper = ({ children }: { children: React.ReactNode }) => (
       <ScrollArea className="w-full max-w-[calc(100vw-3rem)] md:max-w-full pb-4">
-        <div style={{ minWidth: type === 'pie' ? '100%' : `${minWidth}px`, height: '300px' }}>
+        <div id={`chart-${uniqueId}`} style={{ minWidth: type === 'pie' ? '100%' : `${minWidth}px`, height: '300px' }}>
           {children}
         </div>
         <ScrollBar orientation="horizontal" />
@@ -338,9 +691,18 @@ export function ResultDisplay({ result, onRecommendationClick }: ResultDisplayPr
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base">Query Results</CardTitle>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <Badge variant="secondary">{rowCount} rows</Badge>
               <Badge variant="outline">{executionTime}ms</Badge>
+              
+              <Button 
+                onClick={handleExportPDF}
+                disabled={isExporting}
+                className="h-8 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs transition-colors shadow-xs font-semibold"
+              >
+                <FileText className="h-3.5 w-3.5" />
+                <span>{isExporting ? 'Generating PDF...' : 'Download PDF'}</span>
+              </Button>
             </div>
           </div>
         </CardHeader>

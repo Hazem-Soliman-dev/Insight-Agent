@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, FolderOpen, Trash2, Loader2, Brain, Database, Sparkles, LogOut, User, Shield, BarChart3, CreditCard } from 'lucide-react';
+import { Plus, FolderOpen, Trash2, Loader2, Brain, Database, Sparkles, LogOut, User, Shield, BarChart3, CreditCard, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -29,9 +29,10 @@ import { useAuth } from '@/lib/auth';
 import { toast } from 'sonner';
 import type { Project } from '@/types';
 
-export default function HomePage() {
+function HomeContent() {
   const router = useRouter();
-  const { user, isLoading: authLoading, logout } = useAuth();
+  const searchParams = useSearchParams();
+  const { user, isLoading: authLoading, logout, refreshUser } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -46,11 +47,19 @@ export default function HomePage() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (user && searchParams.get('payment') === 'success') {
+      toast.success('Credits purchased successfully!');
+      refreshUser();
+      router.replace('/');
+    }
+  }, [user, searchParams, refreshUser, router]);
+
   const loadProjects = async () => {
     try {
       const data = await projectsApi.getAll();
       setProjects(data);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load projects');
     } finally {
       setIsLoading(false);
@@ -68,7 +77,7 @@ export default function HomePage() {
       setDialogOpen(false);
       toast.success('Project created successfully');
       router.push(`/projects/${project.id}`);
-    } catch (error) {
+    } catch {
       toast.error('Failed to create project');
     } finally {
       setIsCreating(false);
@@ -85,7 +94,7 @@ export default function HomePage() {
       await projectsApi.delete(id);
       setProjects((prev) => prev.filter((p) => p.id !== id));
       toast.success('Project deleted');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete project');
     }
   };
@@ -202,7 +211,17 @@ export default function HomePage() {
               <p className="text-xs text-muted-foreground">Agentic Business Intelligence</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {user && (
+              <Link
+                href="/pricing"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 transition-colors text-xs font-semibold text-indigo-400"
+              >
+                <Coins className="h-3.5 w-3.5 animate-pulse text-indigo-400" />
+                <span>{user.creditsBalance} credits</span>
+              </Link>
+            )}
+
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="gap-2">
@@ -338,5 +357,17 @@ export default function HomePage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }
