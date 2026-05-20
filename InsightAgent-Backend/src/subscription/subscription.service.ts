@@ -11,7 +11,9 @@ export class SubscriptionService {
   private readonly MAX_PROJECTS = 10;
   private readonly MAX_FILE_SIZE_MB = 20;
 
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {
+    this.validateEnv();
+  }
 
   /**
    * Check if user can create a new project

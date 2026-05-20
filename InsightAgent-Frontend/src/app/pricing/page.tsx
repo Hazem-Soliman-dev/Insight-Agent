@@ -51,7 +51,7 @@ export default function PricingPage() {
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      toast.error('Failed to connect to Stripe checkout. Please try again.');
+      toast.error('Failed to initiate checkout. Please try again.');
     } finally {
       setCheckoutLoading(null);
     }
