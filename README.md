@@ -1,6 +1,15 @@
 # InsightAgent - Agentic Business Intelligence System
 
-An AI-powered data analysis platform that transforms CSV files into queryable databases and answers natural language questions using advanced AI.
+AI-powered business intelligence platform — upload CSV files, ask questions in plain English, and get instant data visualizations.
+
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-39827B?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![Clerk](https://img.shields.io/badge/Clerk-6C47FF?style=for-the-badge&logo=clerk&logoColor=white)](https://clerk.com/)
+[![Polar](https://img.shields.io/badge/Polar-4C3EF7?style=for-the-badge&logo=polar&logoColor=white)](https://polar.sh/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+
 
 ### 🚀 Features
 
