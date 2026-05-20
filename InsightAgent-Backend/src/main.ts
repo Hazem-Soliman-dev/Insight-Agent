@@ -39,8 +39,8 @@ async function bootstrap() {
       origin: string,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      // Allow requests with no origin (mobile apps, curl, etc.) in development
-      if (!origin && !isProduction) {
+      // Allow requests with no origin (mobile apps, curl, server-to-server, health check probes)
+      if (!origin) {
         callback(null, true);
         return;
       }
@@ -80,7 +80,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const port = process.env.PORT || 3001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 InsightAgent API running on http://localhost:${port}/api`);
   logger.log(`🔒 Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);

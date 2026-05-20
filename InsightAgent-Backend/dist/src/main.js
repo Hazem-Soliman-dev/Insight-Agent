@@ -28,7 +28,7 @@ async function bootstrap() {
     const isProduction = process.env.NODE_ENV === 'production';
     app.enableCors({
         origin: (origin, callback) => {
-            if (!origin && !isProduction) {
+            if (!origin) {
                 callback(null, true);
                 return;
             }
@@ -58,7 +58,7 @@ async function bootstrap() {
     }));
     app.setGlobalPrefix('api');
     const port = process.env.PORT || 3001;
-    await app.listen(port);
+    await app.listen(port, '0.0.0.0');
     logger.log(`🚀 InsightAgent API running on http://localhost:${port}/api`);
     logger.log(`🔒 Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
     logger.log(`🌐 Allowed Origins: ${allowedOrigins.join(', ') || 'localhost (dev mode)'}`);
