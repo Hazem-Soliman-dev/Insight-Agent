@@ -64,6 +64,11 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
                 <span className="absolute left-0 w-1 h-0 bg-primary/60 rounded-r-md transition-all duration-200 group-hover:h-6" />
               )}
               
+              <item.icon className={cn(
+                "h-4 w-4 shrink-0 transition-colors duration-200",
+                isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"
+              )} />
+              
               <span className="font-semibold text-sm">{item.name}</span>
             </Link>
           );

@@ -146,18 +146,18 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="pb-2 border-b border-border/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="pb-4 border-b border-zinc-900/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
             System Analytics
           </h1>
-          <p className="text-muted-foreground mt-1 text-sm font-medium">
+          <p className="text-muted-foreground mt-1.5 text-xs sm:text-sm font-medium">
             Detailed performance insights, database growth, and transaction analysis
           </p>
         </div>
-        <div className="text-xs font-bold text-muted-foreground bg-zinc-900/40 border border-zinc-800 px-3.5 py-1.5 rounded-full flex items-center gap-1.5 self-start sm:self-auto shadow-inner">
+        <div className="text-xs font-bold text-zinc-400 bg-zinc-900/40 border border-zinc-900 px-3.5 py-1.5 rounded-full flex items-center gap-1.5 self-start sm:self-auto shadow-inner select-none">
           <Calendar className="h-3.5 w-3.5 text-zinc-500" />
           <span>Real-time statistics</span>
         </div>
@@ -165,59 +165,63 @@ export default function AnalyticsPage() {
 
       {/* Overview stats block (4 small cards) */}
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-zinc-800 bg-zinc-950/25 p-5 relative overflow-hidden group">
-          <CardContent className="p-0 flex items-center justify-between">
+        <Card className="relative overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-lg hover:shadow-indigo-500/5 bg-zinc-950/40 backdrop-blur-md border-zinc-900 rounded-2xl">
+          <div className="absolute top-0 right-0 h-24 w-24 bg-indigo-500/5 rounded-full blur-xl pointer-events-none transition-all group-hover:scale-110" />
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Growth Rate</span>
+              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Growth Rate</span>
               <h3 className="text-2xl font-black text-zinc-100">{stats.totalUsers} Users</h3>
-              <span className="text-[10px] text-emerald-400 font-extrabold flex items-center gap-0.5">
+              <span className="text-[10px] text-emerald-400 font-extrabold flex items-center gap-0.5 mt-0.5">
                 <ArrowUpRight className="h-3 w-3 inline" /> +15.4% MoM
               </span>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <div className="h-10 w-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-105 transition-transform duration-200">
               <Users className="h-5 w-5" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-zinc-800 bg-zinc-950/25 p-5 relative overflow-hidden group">
-          <CardContent className="p-0 flex items-center justify-between">
+        <Card className="relative overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/5 bg-zinc-950/40 backdrop-blur-md border-zinc-900 rounded-2xl">
+          <div className="absolute top-0 right-0 h-24 w-24 bg-violet-500/5 rounded-full blur-xl pointer-events-none transition-all group-hover:scale-110" />
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">File Repos</span>
+              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">File Repos</span>
               <h3 className="text-2xl font-black text-zinc-100">{stats.totalProjects} Projects</h3>
-              <span className="text-[10px] text-emerald-400 font-extrabold flex items-center gap-0.5">
+              <span className="text-[10px] text-emerald-400 font-extrabold flex items-center gap-0.5 mt-0.5">
                 <ArrowUpRight className="h-3 w-3 inline" /> +8.2% MoM
               </span>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
+            <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 group-hover:scale-105 transition-transform duration-200">
               <Database className="h-5 w-5" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-zinc-800 bg-zinc-950/25 p-5 relative overflow-hidden group">
-          <CardContent className="p-0 flex items-center justify-between">
+        <Card className="relative overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/5 bg-zinc-950/40 backdrop-blur-md border-zinc-900 rounded-2xl">
+          <div className="absolute top-0 right-0 h-24 w-24 bg-cyan-500/5 rounded-full blur-xl pointer-events-none transition-all group-hover:scale-110" />
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">API Activity</span>
+              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">API Activity</span>
               <h3 className="text-2xl font-black text-zinc-100">{stats.totalQueries} Queries</h3>
-              <span className="text-[10px] text-emerald-400 font-extrabold flex items-center gap-0.5">
+              <span className="text-[10px] text-emerald-400 font-extrabold flex items-center gap-0.5 mt-0.5">
                 <ArrowUpRight className="h-3 w-3 inline" /> +21.6% MoM
               </span>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <div className="h-10 w-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform duration-200">
               <Zap className="h-5 w-5" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-zinc-800 bg-zinc-950/25 p-5 relative overflow-hidden group">
-          <CardContent className="p-0 flex items-center justify-between">
+        <Card className="relative overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:border-amber-500/30 hover:shadow-lg hover:shadow-amber-500/5 bg-zinc-950/40 backdrop-blur-md border-zinc-900 rounded-2xl">
+          <div className="absolute top-0 right-0 h-24 w-24 bg-amber-500/5 rounded-full blur-xl pointer-events-none transition-all group-hover:scale-110" />
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Ledger Wealth</span>
+              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Ledger Wealth</span>
               <h3 className="text-2xl font-black text-zinc-100">{stats.totalCreditsBalance || 0} Credits</h3>
-              <span className="text-[10px] text-zinc-500 font-bold uppercase">Average {(stats.totalCreditsBalance / stats.totalUsers || 0).toFixed(0)} / user</span>
+              <span className="text-[10px] text-zinc-500 font-bold uppercase mt-0.5 block">Average {(stats.totalCreditsBalance / stats.totalUsers || 0).toFixed(0)} / user</span>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+            <div className="h-10 w-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform duration-200">
               <Coins className="h-5 w-5" />
             </div>
           </CardContent>
@@ -225,13 +229,13 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Row 1: Large User Growth Chart */}
-      <Card className="border-zinc-800 bg-zinc-950/15 overflow-hidden">
-        <CardHeader className="border-b border-border/40 pb-4">
+      <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-md overflow-hidden rounded-2xl shadow-md">
+        <CardHeader className="border-b border-zinc-900/60 pb-4 p-5">
           <div className="flex items-center gap-2">
-            <LineIcon className="h-4.5 w-4.5 text-indigo-400" />
-            <CardTitle className="text-base font-bold">User Registrations Trend</CardTitle>
+            <LineIcon className="h-4.5 w-4.5 text-indigo-400 animate-pulse" />
+            <CardTitle className="text-base font-extrabold text-zinc-200">User Registrations Trend</CardTitle>
           </div>
-          <CardDescription className="text-xs">
+          <CardDescription className="text-xs text-zinc-500">
             Cumulative user registrations and growth trajectory over the past six calendar months
           </CardDescription>
         </CardHeader>
@@ -266,13 +270,13 @@ export default function AnalyticsPage() {
       {/* Row 2: Credit distribution (BarChart) & Query volume (LineChart) */}
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
         {/* Token Distribution (BarChart) */}
-        <Card className="border-zinc-800 bg-zinc-950/15 overflow-hidden">
-          <CardHeader className="border-b border-border/40 pb-4">
+        <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-md overflow-hidden rounded-2xl shadow-md">
+          <CardHeader className="border-b border-zinc-900/60 pb-4 p-5">
             <div className="flex items-center gap-2">
               <BarChart2 className="h-4.5 w-4.5 text-purple-400" />
-              <CardTitle className="text-base font-bold">Ledger Balance Distribution</CardTitle>
+              <CardTitle className="text-base font-extrabold text-zinc-200">Ledger Balance Distribution</CardTitle>
             </div>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-zinc-500">
               Breakdown of system accounts categorized by credits tier balance ranges
             </CardDescription>
           </CardHeader>
@@ -298,13 +302,13 @@ export default function AnalyticsPage() {
         </Card>
 
         {/* AI Query Execution volume (LineChart) */}
-        <Card className="border-zinc-800 bg-zinc-950/15 overflow-hidden">
-          <CardHeader className="border-b border-border/40 pb-4">
+        <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-md overflow-hidden rounded-2xl shadow-md">
+          <CardHeader className="border-b border-zinc-900/60 pb-4 p-5">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4.5 w-4.5 text-cyan-400" />
-              <CardTitle className="text-base font-bold">Queries Usage Volume</CardTitle>
+              <CardTitle className="text-base font-extrabold text-zinc-200">Queries Usage Volume</CardTitle>
             </div>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-zinc-500">
               Statistical query volume incremented daily by AI analysis engines
             </CardDescription>
           </CardHeader>

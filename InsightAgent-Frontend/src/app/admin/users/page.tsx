@@ -137,25 +137,25 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="pb-2 border-b border-border/30">
-        <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+      <div className="pb-4 border-b border-zinc-900/60">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent">
           User Management
         </h1>
-        <p className="text-muted-foreground mt-1 text-sm font-medium">
+        <p className="text-muted-foreground mt-1.5 text-xs sm:text-sm font-medium">
           Manage system users, access roles, and pay-as-you-go tiers
         </p>
       </div>
 
       {/* Filters Card */}
-      <Card className="border-zinc-800 bg-zinc-950/15 overflow-hidden">
-        <CardHeader className="border-b border-border/40 pb-4">
+      <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-md overflow-hidden rounded-2xl">
+        <CardHeader className="border-b border-zinc-900/60 pb-4">
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4.5 w-4.5 text-primary" />
-            <CardTitle className="text-base font-bold">Search & Filtering</CardTitle>
+            <SlidersHorizontal className="h-4.5 w-4.5 text-primary animate-pulse" />
+            <CardTitle className="text-base font-bold text-zinc-100">Search & Filtering</CardTitle>
           </div>
-          <CardDescription className="text-xs">
+          <CardDescription className="text-xs text-zinc-400">
             Query users database by name, email, subscription tier, or security role
           </CardDescription>
         </CardHeader>
@@ -171,7 +171,7 @@ export default function UsersPage() {
                   setSearch(e.target.value);
                   setPage(1);
                 }}
-                className="pl-9 bg-zinc-900/50 border-zinc-800 h-11 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-primary focus-visible:border-zinc-700"
+                className="pl-9 bg-zinc-950/50 backdrop-blur-sm border-zinc-900 hover:border-zinc-800 h-11 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-primary focus-visible:border-zinc-800 rounded-xl"
               />
             </div>
 
@@ -183,10 +183,10 @@ export default function UsersPage() {
                 setPage(1);
               }}
             >
-              <SelectTrigger className="bg-zinc-900/50 border-zinc-800 h-11 text-zinc-300 focus:ring-primary">
+              <SelectTrigger className="bg-zinc-950/50 backdrop-blur-sm border-zinc-900 hover:border-zinc-800 h-11 text-zinc-300 focus:ring-primary rounded-xl">
                 <SelectValue placeholder="Filter by Role" />
               </SelectTrigger>
-              <SelectContent className="bg-zinc-950 border-zinc-800 text-zinc-200">
+              <SelectContent className="bg-zinc-950/95 backdrop-blur-md border border-zinc-900 text-zinc-200 rounded-xl">
                 <SelectItem value="all">All Roles</SelectItem>
                 <SelectItem value="USER">User Account</SelectItem>
                 <SelectItem value="ADMIN">System Admin</SelectItem>
@@ -197,11 +197,11 @@ export default function UsersPage() {
       </Card>
 
       {/* Users Data Grid (Dual Presentation) */}
-      <Card className="border-zinc-800 bg-zinc-950/15 overflow-hidden">
+      <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-md overflow-hidden rounded-2xl">
         {/* Desktop View Table (hidden on mobile, blocks on desktop) */}
         <div className="hidden md:block">
           <Table>
-            <TableHeader className="bg-zinc-950/60 border-b border-border/40">
+            <TableHeader className="bg-zinc-950/60 backdrop-blur-sm border-b border-zinc-900/60">
               <TableRow className="hover:bg-transparent">
                 <TableHead className="py-4 font-bold text-zinc-400">User Details</TableHead>
                 <TableHead className="py-4 font-bold text-zinc-400">Access Role</TableHead>
@@ -213,13 +213,13 @@ export default function UsersPage() {
             <TableBody>
               {users.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-16 text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center py-16 text-muted-foreground font-medium">
                     No users matching these filters were found.
                   </TableCell>
                 </TableRow>
               ) : (
                 users.map((user) => (
-                  <TableRow key={user.id} className="border-b border-border/20 hover:bg-zinc-900/30 transition-colors">
+                  <TableRow key={user.id} className="border-b border-zinc-900/40 hover:bg-zinc-900/20 transition-colors">
                     {/* User profile details */}
                     <TableCell className="py-4">
                       <div className="flex items-center gap-3">
@@ -241,10 +241,10 @@ export default function UsersPage() {
                         value={user.role}
                         onValueChange={(value: string) => handleRoleChange(user.id, value)}
                       >
-                        <SelectTrigger className="w-28 bg-zinc-900/50 border-zinc-800 text-xs h-8 text-zinc-300">
+                        <SelectTrigger className="w-28 bg-zinc-950/50 backdrop-blur-sm border-zinc-900 hover:border-zinc-800 text-xs h-8 text-zinc-300 rounded-lg">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-zinc-950 border-zinc-800 text-xs">
+                        <SelectContent className="bg-zinc-950/95 backdrop-blur-md border border-zinc-900 text-xs rounded-xl">
                           <SelectItem value="USER">User</SelectItem>
                           <SelectItem value="ADMIN">Admin</SelectItem>
                         </SelectContent>
@@ -291,14 +291,14 @@ export default function UsersPage() {
         {/* Mobile View Card List (visible on mobile, hidden on desktop) */}
         <div className="block md:hidden p-4 space-y-4">
           {users.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground text-sm">
+            <div className="text-center py-12 text-muted-foreground text-sm font-medium">
               No users matching these filters were found.
             </div>
           ) : (
             users.map((user) => (
               <div 
                 key={user.id} 
-                className="p-5 border border-zinc-800 rounded-2xl bg-zinc-950/30 flex flex-col gap-4 relative overflow-hidden transition-all duration-300 active:border-zinc-700"
+                className="p-4 border border-zinc-905 rounded-2xl bg-zinc-950/40 backdrop-blur-sm flex flex-col gap-4 relative overflow-hidden transition-all duration-300 hover:border-zinc-800/60"
               >
                 {/* Background ambient accent */}
                 <div className="absolute top-0 right-0 h-16 w-16 bg-indigo-500/[0.015] rounded-full blur-lg pointer-events-none" />
@@ -330,11 +330,11 @@ export default function UsersPage() {
 
                 {/* Stats Badges */}
                 <div className="grid grid-cols-2 gap-2 text-center text-xs">
-                  <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-2 flex items-center justify-between px-3">
+                  <div className="bg-zinc-950/60 border border-zinc-900 rounded-xl p-2 flex items-center justify-between px-3">
                     <span className="text-zinc-500 font-semibold">Projects</span>
                     <span className="font-extrabold text-indigo-400">{user._count.projects}</span>
                   </div>
-                  <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-2 flex items-center justify-between px-3">
+                  <div className="bg-zinc-950/60 border border-zinc-900 rounded-xl p-2 flex items-center justify-between px-3">
                     <span className="text-zinc-500 font-semibold">Queries</span>
                     <span className="font-extrabold text-cyan-400">{user.queriesUsed}</span>
                   </div>
@@ -348,10 +348,10 @@ export default function UsersPage() {
                       value={user.tier}
                       onValueChange={(value: string) => handleTierChange(user.id, value)}
                     >
-                      <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800 text-xs h-9 text-zinc-300">
+                      <SelectTrigger className="w-full bg-zinc-950/50 backdrop-blur-sm border-zinc-900 text-xs h-9 text-zinc-300 rounded-lg">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-950 border-zinc-800 text-xs">
+                      <SelectContent className="bg-zinc-950/95 backdrop-blur-md border border-zinc-900 text-xs rounded-xl">
                         <SelectItem value="FREE">Free</SelectItem>
                         <SelectItem value="PRO">Pro</SelectItem>
                         <SelectItem value="ENTERPRISE">Enterprise</SelectItem>
@@ -365,10 +365,10 @@ export default function UsersPage() {
                       value={user.role}
                       onValueChange={(value: string) => handleRoleChange(user.id, value)}
                     >
-                      <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800 text-xs h-9 text-zinc-300">
+                      <SelectTrigger className="w-full bg-zinc-950/50 backdrop-blur-sm border-zinc-900 text-xs h-9 text-zinc-300 rounded-lg">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-950 border-zinc-800 text-xs">
+                      <SelectContent className="bg-zinc-950/95 backdrop-blur-md border border-zinc-900 text-xs rounded-xl">
                         <SelectItem value="USER">User</SelectItem>
                         <SelectItem value="ADMIN">Admin</SelectItem>
                       </SelectContent>
@@ -377,7 +377,7 @@ export default function UsersPage() {
                 </div>
 
                 {/* Joined Date Footer */}
-                <div className="text-[10px] text-muted-foreground flex items-center gap-1 pt-2 border-t border-border/10 justify-end">
+                <div className="text-[10px] text-muted-foreground flex items-center gap-1 pt-2 border-t border-zinc-900/40 justify-end">
                   <Calendar className="h-3 w-3 text-zinc-500" />
                   <span>Joined: {new Date(user.createdAt).toLocaleDateString()}</span>
                 </div>
@@ -395,11 +395,11 @@ export default function UsersPage() {
             size="icon"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="border-zinc-800 bg-zinc-900/50 hover:bg-accent text-zinc-300 rounded-xl"
+            className="border-zinc-900 bg-zinc-950/40 hover:bg-accent text-zinc-300 rounded-xl hover:border-zinc-850"
           >
             <ChevronLeft className="h-4.5 w-4.5" />
           </Button>
-          <span className="text-xs font-semibold text-muted-foreground bg-zinc-900/40 border border-zinc-800/60 px-3.5 py-1.5 rounded-full shadow-inner">
+          <span className="text-xs font-semibold text-muted-foreground bg-zinc-950/50 backdrop-blur-sm border border-zinc-900/60 px-3.5 py-1.5 rounded-full shadow-inner">
             Page <span className="font-extrabold text-zinc-200">{page}</span> of <span className="font-extrabold text-zinc-200">{totalPages}</span>
           </span>
           <Button
@@ -407,7 +407,7 @@ export default function UsersPage() {
             size="icon"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="border-zinc-800 bg-zinc-900/50 hover:bg-accent text-zinc-300 rounded-xl"
+            className="border-zinc-900 bg-zinc-950/40 hover:bg-accent text-zinc-300 rounded-xl hover:border-zinc-850"
           >
             <ChevronRight className="h-4.5 w-4.5" />
           </Button>
@@ -416,7 +416,7 @@ export default function UsersPage() {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteUserId} onOpenChange={() => setDeleteUserId(null)}>
-        <AlertDialogContent className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+        <AlertDialogContent className="bg-zinc-950/90 backdrop-blur-md border border-zinc-900 rounded-2xl p-6 shadow-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-zinc-100 font-extrabold text-lg">Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription className="text-zinc-400 text-sm">
@@ -424,12 +424,12 @@ export default function UsersPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2 mt-4">
-            <AlertDialogCancel className="border-zinc-800 bg-zinc-900/40 hover:bg-zinc-900 text-zinc-300 rounded-xl font-semibold">
+            <AlertDialogCancel className="border-zinc-900 bg-zinc-950/40 hover:bg-zinc-900 text-zinc-300 rounded-xl font-semibold">
               Cancel Operations
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleDelete} 
-              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-xl font-bold px-5"
+              className="bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold px-5"
             >
               Delete Account
             </AlertDialogAction>

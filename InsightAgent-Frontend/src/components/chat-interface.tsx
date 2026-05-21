@@ -102,19 +102,19 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
   ];
 
   return (
-    <div className="flex flex-col h-full relative overflow-hidden bg-background">
+    <div className="flex flex-col h-full relative overflow-hidden bg-transparent">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 md:p-6 scroll-smooth" ref={scrollRef}>
         <div className="space-y-6 max-w-4xl mx-auto pb-28">
           {messages.length === 0 && (
             <div className="text-center py-16 px-4 max-w-xl mx-auto">
-              <div className="h-14 w-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mx-auto mb-6">
+              <div className="h-14 w-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mx-auto mb-6 shadow-inner animate-pulse-glow">
                 <Bot className="h-6 w-6" />
               </div>
               <h3 className="text-lg font-bold text-zinc-200 tracking-tight mb-2">
                 Analyze your dataset instantly
               </h3>
-              <p className="text-xs text-zinc-400 mb-8 leading-relaxed">
+              <p className="text-xs text-zinc-400 mb-8 leading-relaxed font-medium">
                 {hasData
                   ? "Enter questions in natural language. I can query data, perform statistical aggregations, filter subsets, and generate interactive charts."
                   : "Upload a CSV dataset in the panel first to start analyzing."}
@@ -130,7 +130,7 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
                       <Button
                         key={idx}
                         variant="outline"
-                        className="text-xs justify-start py-5 px-4 rounded-xl border-zinc-900 bg-zinc-950/20 hover:bg-zinc-900/60 text-zinc-350 hover:text-zinc-200 text-left whitespace-normal h-auto leading-normal font-semibold transition-all duration-200"
+                        className="text-xs justify-start py-5 px-4 rounded-xl border-zinc-900 bg-zinc-950/40 backdrop-blur-sm hover:border-zinc-800/80 hover:bg-zinc-900/10 text-zinc-300 hover:text-zinc-200 text-left whitespace-normal h-auto leading-normal font-semibold transition-all duration-200"
                         onClick={() => setInput(question)}
                       >
                         {question}
@@ -145,21 +145,20 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
           {messages.map((message, idx) => (
             <div
               key={message.id}
-              className={`flex gap-3.5 ${message.role === 'user' ? 'justify-end' : 'justify-start'
-                }`}
+              className={`flex gap-3.5 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {message.role === 'assistant' && (
                 <div className="flex-shrink-0 w-8.5 h-8.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
-                  <Bot className="h-4.5 w-4.5" />
+                  <Bot className="h-4.5 w-4.5 animate-pulse" />
                 </div>
               )}
               <div
                 className={`min-w-0 ${message.role === 'user'
-                    ? 'max-w-[85%] md:max-w-[70%] bg-indigo-600 text-white rounded-2xl rounded-br-sm px-4 py-2.5 shadow-md shadow-indigo-600/10 font-medium text-xs leading-relaxed'
+                    ? 'max-w-[85%] md:max-w-[70%] bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl rounded-br-sm px-4 py-2.5 shadow-md shadow-indigo-600/10 font-semibold text-xs leading-relaxed'
                     : 'w-full max-w-full md:max-w-[90%] space-y-4'
                   }`}
               >
-                <div className={message.role === 'assistant' ? 'text-xs text-zinc-200 leading-relaxed font-sans bg-zinc-950/20 border border-zinc-900 rounded-2xl p-4.5 shadow-sm' : ''}>
+                <div className={message.role === 'assistant' ? 'text-xs text-zinc-200 leading-relaxed font-sans bg-zinc-950/40 backdrop-blur-md border border-zinc-900 rounded-2xl p-4.5 shadow-sm' : ''}>
                   {message.content}
                 </div>
                 {message.queryResult && (
@@ -176,7 +175,7 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
                 )}
               </div>
               {message.role === 'user' && (
-                <div className="flex-shrink-0 w-8.5 h-8.5 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 shrink-0">
+                <div className="flex-shrink-0 w-8.5 h-8.5 rounded-xl bg-zinc-950/50 border border-zinc-900 flex items-center justify-center text-zinc-300 shrink-0 shadow-inner">
                   <User className="h-4.5 w-4.5" />
                 </div>
               )}
@@ -197,7 +196,7 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
       </div>
 
       {/* Input Area - Sticky at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-zinc-900/80 p-4 bg-zinc-950/80 backdrop-blur-md z-10 w-full shrink-0">
+      <div className="absolute bottom-0 left-0 right-0 border-t border-zinc-900/60 p-4 bg-zinc-950/60 backdrop-blur-md z-10 w-full shrink-0">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
           <div className="relative flex items-center">
             <Textarea
@@ -210,7 +209,7 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
                   : "Upload CSV files first to start asking questions..."
               }
               disabled={!hasData || isLoading}
-              className="pr-14 min-h-[52px] max-h-[120px] resize-none bg-zinc-900/40 border-zinc-900 focus-visible:ring-1 focus-visible:ring-indigo-500/50 text-zinc-100 placeholder-zinc-500 rounded-2xl p-4 text-xs scrollbar-none"
+              className="pr-14 min-h-[52px] max-h-[120px] resize-none bg-zinc-950/50 backdrop-blur-sm border border-zinc-900 hover:border-zinc-800 focus-visible:ring-1 focus-visible:ring-indigo-500/50 text-zinc-100 placeholder-zinc-500 rounded-2xl p-4 text-xs scrollbar-none"
               rows={1}
             />
             <Button

@@ -271,6 +271,7 @@ Recommendation types:
     try {
       const completion = await this.groq.chat.completions.create({
         model: 'llama-3.1-8b-instant',
+        response_format: { type: 'json_object' },
         messages: [
           { role: 'system', content: systemPrompt },
           {
@@ -338,10 +339,12 @@ Recommendation types:
 
     columns.forEach((col) => {
       const value = data[0][col];
-      if (
+      const isNumeric =
         typeof value === 'number' ||
-        (typeof value === 'string' && !isNaN(Number(value)) && value !== '')
-      ) {
+        (typeof value === 'string' && !isNaN(Number(value)) && value !== '') ||
+        (value && typeof (value as any).toNumber === 'function' && !isNaN(Number((value as any).toNumber())));
+
+      if (isNumeric) {
         numericColumns.push(col);
       } else {
         categoryColumns.push(col);
@@ -388,7 +391,11 @@ Recommendation types:
         numericColumns[0] ||
         columns.find((col) => {
           const value = data[0][col];
-          return typeof value === 'number' || !isNaN(Number(value));
+          return (
+            typeof value === 'number' ||
+            (typeof value === 'string' && !isNaN(Number(value)) && value !== '') ||
+            (value && typeof (value as any).toNumber === 'function' && !isNaN(Number((value as any).toNumber())))
+          );
         });
       const xAxis = categoryColumns[0] || columns.find((col) => col !== yAxis);
 
@@ -479,10 +486,15 @@ Recommendation types:
 
     // Check cache
     const cacheKey = `proj:${projectId}:q:${crypto.createHash('md5').update(question).digest('hex')}`;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    const cachedResult = (await this.cacheManager.get<QueryResult>(
-      cacheKey,
-    )) as QueryResult | undefined;
+    let cachedResult: QueryResult | undefined;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      cachedResult = (await this.cacheManager.get<QueryResult>(
+        cacheKey,
+      )) as QueryResult | undefined;
+    } catch (cacheError) {
+      this.logger.error(`Cache read failed: ${cacheError instanceof Error ? cacheError.message : 'Unknown error'}`);
+    }
 
     if (cachedResult) {
       this.logger.log(`Cache hit for question: ${question}`);
@@ -585,13 +597,13 @@ Recommendation types:
       question,
       schemaContext,
       data,
-      sql,
+      currentSQL,
     );
 
     const executionTime = Date.now() - startTime;
 
     // Suggest chart type
-    const chartSuggestion = this.suggestChart(sql, data, requestedChartType);
+    const chartSuggestion = this.suggestChart(currentSQL, data, requestedChartType);
 
     const sanitizedData = this.sanitizeBigInt(data) as Record<
       string,
@@ -611,8 +623,12 @@ Recommendation types:
     await this.subscriptionService.incrementQueryCount(userId);
 
     // Cache the result (1 hour TTL)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    await this.cacheManager.set(cacheKey, result, 3600 * 1000);
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      await this.cacheManager.set(cacheKey, result, 3600 * 1000);
+    } catch (cacheError) {
+      this.logger.error(`Cache write failed: ${cacheError instanceof Error ? cacheError.message : 'Unknown error'}`);
+    }
 
     return result;
   }
@@ -654,6 +670,16 @@ Recommendation types:
     if (typeof obj === 'bigint') {
       const num = Number(obj);
       return Number.isSafeInteger(num) ? num : obj.toString();
+    }
+
+    // Handle Decimal objects
+    if (obj && typeof (obj as any).toNumber === 'function') {
+      return (obj as any).toNumber();
+    }
+
+    // Handle Date objects
+    if (obj instanceof Date) {
+      return obj;
     }
 
     if (Array.isArray(obj)) {

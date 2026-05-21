@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Check, Sparkles, Loader2, Coins } from 'lucide-react';
+import { Check, Loader2, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -77,21 +77,32 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 text-foreground">
+    <div className="min-h-screen bg-background relative overflow-hidden font-sans pb-0">
+      {/* Glowing Background Grids & Ambient Blobs */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-100 pointer-events-none" />
+      <div className="absolute inset-0 ambient-glow pointer-events-none" />
+      <div className="absolute top-[10%] left-[-10%] w-[30rem] h-[30rem] rounded-full bg-violet-600/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[10%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-cyan-600/5 blur-[140px] pointer-events-none" />
+
       {/* Unified Premium Navbar */}
       <Navbar user={user} logout={logout} />
 
       {/* Pricing Section */}
-      <main className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold tracking-tight mb-4">Transparent Pay-As-You-Go Credits</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+      <main className="container mx-auto px-4 py-8 sm:py-16 relative z-10 max-w-6xl">
+        <div className="text-center mb-10 sm:mb-16 space-y-4">
+          <h2 className="text-3xl sm:text-5xl font-[950] tracking-tight text-zinc-100 leading-[1.1] text-balance">
+            Transparent
+            <span className="block mt-1 text-[20px] sm:inline sm:mt-0 bg-gradient-to-r from-primary via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent select-none pb-1 sm:pb-2">
+              {" "}Pay-As-You-Go Credits
+            </span>
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto leading-relaxed text-balance">
             Purchase credit packs to execute agentic data analysis. Zero monthly subscriptions or recurring fees.
           </p>
           {user && (
-            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-zinc-400">
-              <Coins className="h-4 w-4 text-indigo-400 animate-pulse" />
-              <span>Current balance: </span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 text-xs text-indigo-300 font-bold shadow-sm shadow-indigo-500/5 select-none mt-2">
+              <Coins className="h-3.5 w-3.5 text-indigo-400 animate-pulse" />
+              <span>Current Balance: </span>
               <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
                 {user.creditsBalance} credits
               </span>
@@ -104,7 +115,7 @@ export default function PricingPage() {
             <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
           </div>
         ) : (
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="flex md:grid md:grid-cols-3 gap-4 sm:gap-6 overflow-x-auto md:overflow-x-visible pb-4 md:pb-0 snap-x snap-mandatory md:mx-0 md:px-0 scrollbar-none max-w-6xl mx-auto">
             {plans.map((plan) => {
               const isPopular = plan.id === 'credits-growth';
               const features = getPlanFeatures(plan.credits);
@@ -112,46 +123,38 @@ export default function PricingPage() {
               return (
                 <Card
                   key={plan.id}
-                  className={`relative bg-zinc-950/40 border ${
-                    isPopular ? 'border-indigo-500 shadow-2xl scale-105 bg-zinc-950/80' : 'border-zinc-800'
-                  } transition-all duration-300 hover:shadow-xl`}
+                  className={`relative bg-zinc-950/40 backdrop-blur-md border ${
+                    isPopular ? 'border-indigo-500/70 shadow-2xl scale-100 md:scale-105 bg-zinc-950/80 z-10' : 'border-zinc-900 hover:border-zinc-800/80 hover:bg-zinc-900/10'
+                  } transition-all duration-300 rounded-2xl overflow-hidden min-w-[240px] sm:min-w-[320px] md:min-w-0 flex-1 shrink-0 md:shrink snap-center flex flex-col justify-between`}
                 >
-                  {isPopular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <div className="bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-lg shadow-indigo-600/30">
-                        <Sparkles className="h-3 w-3" />
-                        Most Popular
-                      </div>
-                    </div>
-                  )}
-                  <CardHeader className="text-center pb-8 pt-8">
-                    <CardTitle className="text-2xl mb-2 font-extrabold text-zinc-100">{plan.name}</CardTitle>
-                    <CardDescription className="text-zinc-400">{plan.description}</CardDescription>
-                    <div className="mt-4">
-                      <span className="text-5xl font-black tracking-tight text-zinc-100">${plan.price}</span>
-                      <span className="text-muted-foreground text-sm font-medium"> one-time</span>
+                  <CardHeader className="text-center p-5 pb-3 pt-7">
+                    <CardTitle className="text-xl font-extrabold text-zinc-100">{plan.name}</CardTitle>
+                    <CardDescription className="text-xs text-zinc-500">{plan.description}</CardDescription>
+                    <div className="mt-4 flex items-baseline justify-center gap-1">
+                      <span className="text-4xl sm:text-5xl font-black tracking-tight text-zinc-100">${plan.price}</span>
+                      <span className="text-zinc-500 text-xs font-semibold uppercase tracking-wider"> one-time</span>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3 mb-8">
+                  <CardContent className="p-5 pt-3 flex-1 flex flex-col justify-between">
+                    <ul className="space-y-2.5 mb-6">
                       {features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2 text-zinc-300">
-                          <Check className="h-5 w-5 text-indigo-400 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm">{feature}</span>
+                        <li key={feature} className="flex items-start gap-2.5 text-zinc-300">
+                          <Check className="h-4.5 w-4.5 text-indigo-400 flex-shrink-0 mt-0.5" />
+                          <span className="text-xs leading-relaxed">{feature}</span>
                         </li>
                       ))}
                     </ul>
                     <Button
-                      className={`w-full py-6 text-base font-bold shadow-md ${
+                      className={`w-full py-5 rounded-xl text-xs font-bold shadow-md cursor-pointer transition-all duration-200 ${
                         isPopular
-                          ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                          : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border border-zinc-800'
+                          ? 'bg-indigo-600 hover:bg-indigo-700 text-white hover:-translate-y-0.5'
+                          : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:-translate-y-0.5'
                       }`}
                       onClick={() => handleCheckout(plan.id)}
                       disabled={checkoutLoading !== null}
                     >
                       {checkoutLoading === plan.id ? (
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       ) : (
                         `Buy ${plan.credits.toLocaleString()} Credits`
                       )}
@@ -163,12 +166,12 @@ export default function PricingPage() {
           </div>
         )}
 
-        <div className="mt-16 text-center max-w-2xl mx-auto bg-zinc-950/20 border border-zinc-800 p-8 rounded-2xl">
-          <h3 className="text-2xl font-bold text-zinc-100 mb-2">Need bulk credits?</h3>
-          <p className="text-zinc-400 mb-6">
+        <div className="mt-12 text-center max-w-xl mx-auto bg-zinc-950/40 backdrop-blur-md border border-zinc-900 p-6 rounded-2xl shadow-sm mb-14 sm:mb-0">
+          <h3 className="text-lg font-bold text-zinc-200 mb-1.5 tracking-tight">Need bulk credits?</h3>
+          <p className="text-xs text-zinc-400 mb-5 leading-relaxed">
             We provide tailored credit bundles for enterprise integration, large data volumes, and multi-tenant deployments.
           </p>
-          <Button size="lg" className="bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border border-zinc-800">
+          <Button className="bg-zinc-900 hover:bg-zinc-800 text-zinc-350 hover:text-zinc-100 border border-zinc-800 rounded-xl text-xs font-bold py-5 px-6 shadow-sm transition-all duration-200">
             Contact Enterprise Sales
           </Button>
         </div>

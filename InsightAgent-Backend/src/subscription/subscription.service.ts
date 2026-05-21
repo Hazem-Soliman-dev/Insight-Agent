@@ -2,17 +2,36 @@ import {
   Injectable,
   ForbiddenException,
   PayloadTooLargeException,
+  Logger,
 } from '@nestjs/common';
 import { Polar } from '@polar-sh/sdk';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class SubscriptionService {
+  private readonly logger = new Logger(SubscriptionService.name);
   private readonly MAX_PROJECTS = 10;
   private readonly MAX_FILE_SIZE_MB = 20;
 
   constructor(private prisma: PrismaService) {
     this.validateEnv();
+  }
+
+  private validateEnv(): void {
+    const requiredEnv = [
+      'POLAR_ACCESS_TOKEN',
+      'POLAR_STARTER_PRODUCT_ID',
+      'POLAR_GROWTH_PRODUCT_ID',
+      'POLAR_POWER_PRODUCT_ID',
+    ];
+
+    const missing = requiredEnv.filter((env) => !process.env[env]);
+
+    if (missing.length > 0) {
+      this.logger.warn(
+        `Missing environment variables: ${missing.join(', ')}. Subscription features may not work correctly.`,
+      );
+    }
   }
 
   /**

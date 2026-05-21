@@ -149,14 +149,14 @@ export default function PlansPage() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-border/30">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-zinc-900/60">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent">
             Credit Plans & Ledger
           </h1>
-          <p className="text-muted-foreground mt-1 text-sm font-medium">
+          <p className="text-muted-foreground mt-1.5 text-xs sm:text-sm font-medium">
             Manage user balances and view active pay-as-you-go credit packages
           </p>
         </div>
@@ -164,7 +164,7 @@ export default function PlansPage() {
           variant="outline" 
           size="sm" 
           onClick={loadPlans} 
-          className="self-start sm:self-auto gap-2 border-zinc-800 bg-zinc-900/50 hover:bg-accent text-zinc-300 rounded-xl"
+          className="self-start sm:self-auto gap-2 border-zinc-900 bg-zinc-950/40 hover:bg-accent text-zinc-300 rounded-xl hover:border-zinc-800"
         >
           <RefreshCw className="h-4 w-4" />
           Refresh Plans
@@ -172,15 +172,15 @@ export default function PlansPage() {
       </div>
 
       {/* Info Banner */}
-      <Card className="bg-indigo-950/20 border-indigo-500/20 overflow-hidden relative">
+      <Card className="bg-indigo-950/20 backdrop-blur-sm border border-indigo-500/20 overflow-hidden relative rounded-2xl">
         <div className="absolute top-0 right-0 h-32 w-32 bg-indigo-500/10 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none" />
         <CardContent className="p-6 flex items-start gap-4">
-          <div className="h-10 w-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 flex-shrink-0 border border-indigo-500/20">
-            <Info className="h-5 w-5" />
+          <div className="h-10 w-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 flex-shrink-0 border border-indigo-500/20 shadow-inner">
+            <Info className="h-5 w-5 animate-pulse" />
           </div>
           <div>
             <h4 className="font-bold text-indigo-300 text-base">Credit-Based Pay-As-You-Go Architecture</h4>
-            <p className="text-sm text-indigo-200/70 mt-1.5 leading-relaxed max-w-4xl">
+            <p className="text-sm text-indigo-200/70 mt-1.5 leading-relaxed max-w-4xl font-medium">
               InsightAgent has successfully migrated from a legacy tiered subscription model to a streamlined, credit-based, 
               pay-as-you-go system. Users buy tokens to generate agentic insights, with no recurring or periodic subscription contracts.
             </p>
@@ -188,7 +188,7 @@ export default function PlansPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-8 lg:grid-cols-12">
+      <div className="grid gap-6 md:gap-8 lg:grid-cols-12">
         {/* Active Credit Packs */}
         <div className="lg:col-span-7 space-y-6">
           <div className="flex items-center gap-2">
@@ -202,16 +202,16 @@ export default function PlansPage() {
               return (
                 <Card 
                   key={plan.id} 
-                  className={`flex flex-col relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+                  className={`flex flex-col relative overflow-hidden transition-all duration-300 rounded-2xl backdrop-blur-md ${
                     isPopular 
-                      ? 'border-primary/80 bg-primary/5 ring-1 ring-primary/20 scale-[1.02]' 
-                      : 'border-zinc-800 bg-zinc-950/20'
+                      ? 'border-indigo-500/70 bg-zinc-950/80 shadow-2xl scale-[1.02] z-10' 
+                      : 'border-zinc-900 bg-zinc-950/40 hover:border-zinc-800/80 hover:bg-zinc-900/10'
                   }`}
                 >
                   {isPopular && (
                     <div className="absolute top-0 right-0 z-10">
-                      <span className="bg-gradient-to-r from-primary to-purple-600 text-primary-foreground text-[9px] font-black px-2.5 py-0.5 rounded-bl-lg flex items-center gap-0.5 uppercase tracking-wide">
-                        <Sparkles className="h-2 w-2" /> Popular
+                      <span className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-[9px] font-black px-2.5 py-0.5 rounded-bl-lg flex items-center gap-0.5 uppercase tracking-wide">
+                        <Sparkles className="h-2.5 w-2.5 animate-spin" style={{ animationDuration: '3s' }} /> Popular
                       </span>
                     </div>
                   )}
@@ -219,18 +219,18 @@ export default function PlansPage() {
                     <Badge 
                       variant={isPopular ? "default" : "secondary"} 
                       className={`w-fit text-[9px] font-extrabold uppercase tracking-wider mb-2 ${
-                        isPopular ? 'bg-primary text-primary-foreground' : 'bg-zinc-800 text-zinc-300 border-zinc-700'
+                        isPopular ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-zinc-800/60 text-zinc-300 border-zinc-700/60'
                       }`}
                     >
                       {plan.id.split('-')[1]} pack
                     </Badge>
-                    <CardTitle className="text-lg font-bold truncate text-zinc-100">{plan.name}</CardTitle>
+                    <CardTitle className="text-lg font-extrabold truncate text-zinc-100">{plan.name}</CardTitle>
                     <CardDescription className="text-xs text-zinc-400 min-h-[36px] line-clamp-2 mt-1 leading-normal">
                       {plan.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-5 pt-0 mt-auto flex flex-col gap-4">
-                    <div className="bg-zinc-900/50 rounded-xl p-3 flex items-center justify-between border border-zinc-800/40">
+                    <div className="bg-zinc-900/40 backdrop-blur-sm rounded-xl p-3 flex items-center justify-between border border-zinc-900/60">
                       <div className="flex items-center gap-1.5 text-zinc-400">
                         <CoinsIcon className="h-4 w-4 text-indigo-400" />
                         <span className="text-xs font-semibold">Tokens Included</span>
@@ -250,7 +250,7 @@ export default function PlansPage() {
             })}
           </div>
 
-          <Card className="bg-zinc-950/40 border-zinc-800/80 p-5 mt-4">
+          <Card className="bg-zinc-950/40 backdrop-blur-md border-zinc-900 p-5 mt-4 rounded-2xl">
             <div className="flex gap-3 text-xs text-muted-foreground leading-relaxed">
               <Lock className="h-4 w-4 text-amber-500/80 flex-shrink-0 mt-0.5" />
               <div>
@@ -265,14 +265,14 @@ export default function PlansPage() {
         {/* User Balance Adjustment */}
         <div className="lg:col-span-5 space-y-6">
           <div className="flex items-center gap-2">
-            <User className="h-5 w-5 text-primary" />
+            <User className="h-5 w-5 text-primary animate-pulse" />
             <h2 className="text-xl font-extrabold text-zinc-100">User Ledger Balancer</h2>
           </div>
 
-          <Card className="border-zinc-800 bg-zinc-950/15 overflow-hidden">
-            <CardHeader className="pb-4 border-b border-border/40">
-              <CardTitle className="text-lg font-bold">Search & Adjust Balance</CardTitle>
-              <CardDescription className="text-xs">
+          <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-md overflow-hidden rounded-2xl">
+            <CardHeader className="pb-4 border-b border-zinc-900/60">
+              <CardTitle className="text-lg font-bold text-zinc-100">Search & Adjust Balance</CardTitle>
+              <CardDescription className="text-xs text-zinc-400">
                 Search a user by email to instantly modify their credit balance
               </CardDescription>
             </CardHeader>
@@ -289,13 +289,13 @@ export default function PlansPage() {
                       placeholder="user@example.com"
                       value={userEmail}
                       onChange={(e) => setUserEmail(e.target.value)}
-                      className="pl-9 bg-zinc-900/50 border-zinc-800 h-11 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-primary focus-visible:border-zinc-700"
+                      className="pl-9 bg-zinc-950/50 backdrop-blur-sm border-zinc-900 h-11 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-primary focus-visible:border-zinc-800 rounded-xl"
                     />
                   </div>
                   <Button 
                     type="submit" 
                     disabled={searching} 
-                    className="gap-2 h-11 font-bold px-5 bg-primary text-primary-foreground hover:bg-primary/95 rounded-xl transition-all duration-200"
+                    className="gap-2 h-11 font-bold px-5 bg-gradient-to-r from-primary to-purple-600 text-primary-foreground hover:opacity-95 shadow-md shadow-primary/10 rounded-xl transition-all duration-200"
                   >
                     {searching ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -308,9 +308,9 @@ export default function PlansPage() {
 
               {/* Search Result & Adjustments */}
               {foundUser ? (
-                <div className="space-y-6 pt-4 border-t border-zinc-800/80 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="space-y-6 pt-4 border-t border-zinc-900/60 animate-in fade-in slide-in-from-top-2 duration-300">
                   {/* Found User Info Card */}
-                  <div className="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-4 space-y-3 relative overflow-hidden">
+                  <div className="bg-zinc-950/60 border border-zinc-900 rounded-2xl p-4 space-y-3 relative overflow-hidden">
                     <div className="absolute top-0 right-0 h-12 w-12 bg-indigo-500/[0.02] rounded-full blur-md pointer-events-none" />
                     <div className="flex justify-between items-start">
                       <div>
@@ -326,12 +326,12 @@ export default function PlansPage() {
                       </Badge>
                     </div>
 
-                    <Separator className="bg-zinc-800/50" />
+                    <Separator className="bg-zinc-900/40" />
 
-                    <div className="flex justify-between items-center bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-800/40">
+                    <div className="flex justify-between items-center bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-900/40">
                       <span className="text-xs text-zinc-500 font-semibold">Current Balance</span>
                       <div className="flex items-center gap-1.5 font-black text-zinc-200 text-sm">
-                        <Coins className="h-4 w-4 text-amber-500" />
+                        <Coins className="h-4 w-4 text-amber-500 animate-pulse" />
                         <span>{foundUser.creditsBalance} credits</span>
                       </div>
                     </div>
@@ -341,14 +341,14 @@ export default function PlansPage() {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label className="text-xs font-bold text-zinc-400">Adjustment Method</Label>
-                      <div className="grid grid-cols-2 gap-1.5 p-1 bg-zinc-900/80 rounded-xl border border-zinc-800 h-11 items-center">
+                      <div className="grid grid-cols-2 gap-1.5 p-1 bg-zinc-900/40 backdrop-blur-sm rounded-xl border border-zinc-900 h-11 items-center">
                         <button
                           type="button"
                           onClick={() => setAdjustmentType('add')}
                           className={`h-9 rounded-lg text-xs font-bold transition-all duration-200 ${
                             adjustmentType === 'add'
-                              ? 'bg-primary text-primary-foreground shadow-sm'
-                              : 'text-zinc-400 hover:text-zinc-200'
+                              ? 'bg-gradient-to-r from-primary to-purple-600 text-primary-foreground shadow-md shadow-primary/10'
+                              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/40'
                           }`}
                         >
                           Add Credits
@@ -358,8 +358,8 @@ export default function PlansPage() {
                           onClick={() => setAdjustmentType('set')}
                           className={`h-9 rounded-lg text-xs font-bold transition-all duration-200 ${
                             adjustmentType === 'set'
-                              ? 'bg-primary text-primary-foreground shadow-sm'
-                              : 'text-zinc-400 hover:text-zinc-200'
+                              ? 'bg-gradient-to-r from-primary to-purple-600 text-primary-foreground shadow-md shadow-primary/10'
+                              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/40'
                           }`}
                         >
                           Override Total
@@ -378,14 +378,14 @@ export default function PlansPage() {
                         placeholder={adjustmentType === 'add' ? 'e.g. 50' : 'e.g. 100'}
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
-                        className="bg-zinc-900/50 border-zinc-800 h-11 text-zinc-100 focus-visible:ring-primary focus-visible:border-zinc-700"
+                        className="bg-zinc-950/50 backdrop-blur-sm border-zinc-900 h-11 text-zinc-100 focus-visible:ring-primary focus-visible:border-zinc-800 rounded-xl"
                       />
                     </div>
 
                     <Button
                       onClick={handleUpdateCredits}
                       disabled={isUpdatingCredits || amount === ''}
-                      className="w-full gap-2 font-bold h-12 bg-primary text-primary-foreground hover:bg-primary/95 rounded-xl transition-all duration-200 shadow-md shadow-primary/10"
+                      className="w-full gap-2 font-bold h-12 bg-gradient-to-r from-primary to-purple-600 text-primary-foreground hover:opacity-95 rounded-xl transition-all duration-200 shadow-md shadow-primary/10 animate-pulse-glow"
                     >
                       {isUpdatingCredits ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -397,7 +397,7 @@ export default function PlansPage() {
                   </div>
                 </div>
               ) : (
-                <div className="border border-dashed border-zinc-800 rounded-2xl p-8 text-center text-zinc-500 text-xs leading-relaxed">
+                <div className="border border-dashed border-zinc-900 rounded-2xl p-8 text-center text-zinc-500 text-xs leading-relaxed">
                   Search for a user by email above to show options for updating their credit balance.
                 </div>
               )}

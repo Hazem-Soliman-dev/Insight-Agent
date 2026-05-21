@@ -1,9 +1,11 @@
 import { PrismaService } from '../prisma/prisma.service';
 export declare class SubscriptionService {
     private prisma;
+    private readonly logger;
     private readonly MAX_PROJECTS;
     private readonly MAX_FILE_SIZE_MB;
     constructor(prisma: PrismaService);
+    private validateEnv;
     checkProjectLimit(userId: string): Promise<void>;
     checkQueryLimit(userId: string): Promise<void>;
     incrementQueryCount(userId: string): Promise<void>;

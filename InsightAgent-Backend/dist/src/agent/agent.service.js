@@ -240,6 +240,7 @@ Recommendation types:
         try {
             const completion = await this.groq.chat.completions.create({
                 model: 'llama-3.1-8b-instant',
+                response_format: { type: 'json_object' },
                 messages: [
                     { role: 'system', content: systemPrompt },
                     {
@@ -284,8 +285,10 @@ Recommendation types:
         const categoryColumns = [];
         columns.forEach((col) => {
             const value = data[0][col];
-            if (typeof value === 'number' ||
-                (typeof value === 'string' && !isNaN(Number(value)) && value !== '')) {
+            const isNumeric = typeof value === 'number' ||
+                (typeof value === 'string' && !isNaN(Number(value)) && value !== '') ||
+                (value && typeof value.toNumber === 'function' && !isNaN(Number(value.toNumber())));
+            if (isNumeric) {
                 numericColumns.push(col);
             }
             else {
@@ -318,7 +321,9 @@ Recommendation types:
             const yAxis = numericColumns[0] ||
                 columns.find((col) => {
                     const value = data[0][col];
-                    return typeof value === 'number' || !isNaN(Number(value));
+                    return (typeof value === 'number' ||
+                        (typeof value === 'string' && !isNaN(Number(value)) && value !== '') ||
+                        (value && typeof value.toNumber === 'function' && !isNaN(Number(value.toNumber()))));
                 });
             const xAxis = categoryColumns[0] || columns.find((col) => col !== yAxis);
             if (dateColumns.length > 0) {
@@ -378,7 +383,13 @@ Recommendation types:
         const startTime = Date.now();
         await this.subscriptionService.checkQueryLimit(userId);
         const cacheKey = `proj:${projectId}:q:${crypto.createHash('md5').update(question).digest('hex')}`;
-        const cachedResult = (await this.cacheManager.get(cacheKey));
+        let cachedResult;
+        try {
+            cachedResult = (await this.cacheManager.get(cacheKey));
+        }
+        catch (cacheError) {
+            this.logger.error(`Cache read failed: ${cacheError instanceof Error ? cacheError.message : 'Unknown error'}`);
+        }
         if (cachedResult) {
             this.logger.log(`Cache hit for question: ${question}`);
             await this.subscriptionService.incrementQueryCount(userId);
@@ -438,9 +449,9 @@ Recommendation types:
                 }
             }
         }
-        const { recommendations, summary } = await this.generateRecommendations(question, schemaContext, data, sql);
+        const { recommendations, summary } = await this.generateRecommendations(question, schemaContext, data, currentSQL);
         const executionTime = Date.now() - startTime;
-        const chartSuggestion = this.suggestChart(sql, data, requestedChartType);
+        const chartSuggestion = this.suggestChart(currentSQL, data, requestedChartType);
         const sanitizedData = this.sanitizeBigInt(data);
         const result = {
             sql: currentSQL,
@@ -452,7 +463,12 @@ Recommendation types:
             executionTime,
         };
         await this.subscriptionService.incrementQueryCount(userId);
-        await this.cacheManager.set(cacheKey, result, 3600 * 1000);
+        try {
+            await this.cacheManager.set(cacheKey, result, 3600 * 1000);
+        }
+        catch (cacheError) {
+            this.logger.error(`Cache write failed: ${cacheError instanceof Error ? cacheError.message : 'Unknown error'}`);
+        }
         return result;
     }
     async previewTable(projectId, tableName, limit = 10) {
@@ -472,6 +488,12 @@ Recommendation types:
         if (typeof obj === 'bigint') {
             const num = Number(obj);
             return Number.isSafeInteger(num) ? num : obj.toString();
+        }
+        if (obj && typeof obj.toNumber === 'function') {
+            return obj.toNumber();
+        }
+        if (obj instanceof Date) {
+            return obj;
         }
         if (Array.isArray(obj)) {
             return obj.map((item) => this.sanitizeBigInt(item));

@@ -13,8 +13,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <AdminRoute>
       <div className="flex min-h-screen bg-background relative overflow-hidden">
         {/* Decorative background grid & ambient light */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] pointer-events-none" />
-        <div className="absolute top-0 right-0 h-[500px] w-[500px] bg-gradient-to-b from-primary/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-100 pointer-events-none" />
+        <div className="absolute inset-0 ambient-glow pointer-events-none" />
+        <div className="absolute top-[10%] left-[-10%] w-[30rem] h-[30rem] rounded-full bg-violet-600/5 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[10%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-cyan-600/5 blur-[140px] pointer-events-none" />
         
         {/* Sidebar Component */}
         <AdminSidebar 

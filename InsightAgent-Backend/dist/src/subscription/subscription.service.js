@@ -8,17 +8,32 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var SubscriptionService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubscriptionService = void 0;
 const common_1 = require("@nestjs/common");
 const sdk_1 = require("@polar-sh/sdk");
 const prisma_service_1 = require("../prisma/prisma.service");
-let SubscriptionService = class SubscriptionService {
+let SubscriptionService = SubscriptionService_1 = class SubscriptionService {
     prisma;
+    logger = new common_1.Logger(SubscriptionService_1.name);
     MAX_PROJECTS = 10;
     MAX_FILE_SIZE_MB = 20;
     constructor(prisma) {
         this.prisma = prisma;
+        this.validateEnv();
+    }
+    validateEnv() {
+        const requiredEnv = [
+            'POLAR_ACCESS_TOKEN',
+            'POLAR_STARTER_PRODUCT_ID',
+            'POLAR_GROWTH_PRODUCT_ID',
+            'POLAR_POWER_PRODUCT_ID',
+        ];
+        const missing = requiredEnv.filter((env) => !process.env[env]);
+        if (missing.length > 0) {
+            this.logger.warn(`Missing environment variables: ${missing.join(', ')}. Subscription features may not work correctly.`);
+        }
     }
     async checkProjectLimit(userId) {
         const user = await this.prisma.user.findUnique({
@@ -163,7 +178,7 @@ let SubscriptionService = class SubscriptionService {
     }
 };
 exports.SubscriptionService = SubscriptionService;
-exports.SubscriptionService = SubscriptionService = __decorate([
+exports.SubscriptionService = SubscriptionService = SubscriptionService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], SubscriptionService);

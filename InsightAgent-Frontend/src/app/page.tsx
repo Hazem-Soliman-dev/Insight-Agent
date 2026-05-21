@@ -87,17 +87,17 @@ function MockupDashboard() {
   const current = tabs[activeTab];
 
   return (
-    <div className="w-full max-w-5xl mx-auto rounded-2xl border border-zinc-800 bg-zinc-950/70 shadow-2xl backdrop-blur-lg overflow-hidden text-left flex flex-col md:flex-row h-auto md:h-[620px]">
+    <div className="w-full max-w-5xl mx-auto rounded-2xl border-0 md:border border-zinc-800 bg-transparent md:bg-zinc-950/70 shadow-none md:shadow-2xl backdrop-blur-none md:backdrop-blur-lg overflow-hidden text-left flex flex-col md:flex-row h-auto md:h-[620px]">
 
       {/* Sidebar: Dataset Browser */}
-      <div className="w-full md:w-64 border-r border-zinc-800 bg-zinc-950/40 p-4 flex flex-col gap-4">
+      <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-zinc-800/50 bg-transparent md:bg-zinc-950/40 p-0 pb-4 md:p-4 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Active Datasets</span>
           <span className="flex items-center justify-center h-5 w-5 rounded bg-primary/20 text-[10px] font-bold text-primary">3</span>
         </div>
 
         {/* Dataset Buttons */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 scrollbar-none">
           {(Object.keys(tabs) as Array<'sales' | 'churn' | 'marketing'>).map((key) => {
             const data = tabs[key];
             const isSelected = activeTab === key;
@@ -105,7 +105,7 @@ function MockupDashboard() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all duration-200 ${isSelected
+                className={`flex-1 shrink-0 md:w-full flex items-center justify-between p-3 rounded-xl border border-zinc-900/40 md:border-zinc-800/40 text-left transition-all duration-200 min-w-[160px] md:min-w-0 ${isSelected
                   ? 'bg-primary/10 border-primary/40 text-primary shadow-lg shadow-primary/5'
                   : 'bg-zinc-900/30 border-zinc-800/40 text-zinc-400 hover:bg-zinc-900/60 hover:text-zinc-200'
                   }`}
@@ -117,7 +117,7 @@ function MockupDashboard() {
                     <p className="text-[10px] text-zinc-500">{data.rows}</p>
                   </div>
                 </div>
-                <ChevronRight className={`h-3 w-3 shrink-0 transition-transform ${isSelected ? 'text-primary translate-x-0.5' : 'text-zinc-600'}`} />
+                <ChevronRight className={`h-3 w-3 shrink-0 transition-transform ${isSelected ? 'text-primary translate-x-0.5' : 'text-zinc-600'} hidden md:block`} />
               </button>
             );
           })}
@@ -139,7 +139,7 @@ function MockupDashboard() {
       <div className="flex-1 flex flex-col bg-zinc-950/20 overflow-hidden">
 
         {/* Playground Top Info Bar */}
-        <div className="border-b border-zinc-800/60 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-zinc-950/30">
+        <div className="border-b border-zinc-800/40 py-3 md:py-4 px-0 md:px-6 flex flex-row items-center justify-between gap-3 bg-transparent md:bg-zinc-950/30">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-xs font-bold text-zinc-300">Autonomous BI Agent: Active</span>
@@ -151,11 +151,11 @@ function MockupDashboard() {
         </div>
 
         {/* Play Space Body */}
-        <div className="flex-1 p-6 overflow-y-auto flex flex-col gap-6 scrollbar-thin">
+        <div className="flex-1 px-0 py-4 md:p-6 overflow-y-auto flex flex-col gap-6 scrollbar-thin">
 
           {/* User Request Bubble */}
-          <div className="flex items-start gap-3.5 max-w-[85%] self-end">
-            <div className="bg-primary hover:bg-primary/95 text-primary-foreground p-3.5 rounded-2xl rounded-tr-sm shadow-md">
+          <div className="flex items-start gap-2.5 max-w-[95%] md:max-w-[85%] self-end">
+            <div className="bg-primary hover:bg-primary/95 text-primary-foreground p-3 md:p-3.5 rounded-2xl rounded-tr-sm shadow-md">
               <p className="text-xs font-bold leading-relaxed">{current.query}</p>
             </div>
             <div className="h-8 w-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-300 shrink-0 select-none">
@@ -164,17 +164,17 @@ function MockupDashboard() {
           </div>
 
           {/* AI Response Bubble */}
-          <div className="flex items-start gap-3.5 max-w-[90%]">
+          <div className="flex items-start gap-2.5 max-w-[98%] md:max-w-[90%]">
             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center text-primary-foreground shrink-0 shadow shadow-primary/25 select-none">
               <Brain className="h-4.5 w-4.5" />
             </div>
             <div className="flex-1 space-y-4">
-              <div className="bg-zinc-900 border border-zinc-800/60 p-4 rounded-2xl rounded-tl-sm shadow-lg shadow-black/10">
+              <div className="bg-zinc-900 border border-zinc-800/50 p-3.5 md:p-4 rounded-2xl rounded-tl-sm shadow-lg shadow-black/10">
                 <p className="text-xs text-zinc-300 leading-relaxed">{current.response}</p>
               </div>
 
               {/* Graphical Insights Card */}
-              <div className="border border-zinc-800 bg-zinc-900/60 rounded-xl p-5 space-y-4 shadow-sm">
+              <div className="border border-zinc-800/60 bg-zinc-900/40 md:bg-zinc-900/60 rounded-xl p-4 md:p-5 space-y-4 shadow-sm">
                 <div className="flex items-center justify-between border-b border-zinc-800/40 pb-2">
                   <div className="flex items-center gap-2">
                     <BarChart2 className="h-4 w-4 text-primary" />
@@ -210,7 +210,7 @@ function MockupDashboard() {
                 </div>
                 <div className="grid grid-cols-1 gap-2.5">
                   {current.recommendations.map((rec, idx) => (
-                    <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl border border-zinc-800/60 bg-zinc-900/35 hover:bg-zinc-900/60 transition-colors">
+                    <div key={idx} className="flex items-start gap-2 p-2.5 md:p-3 rounded-xl border border-zinc-800/40 bg-zinc-900/20 md:bg-zinc-900/35 hover:bg-zinc-900/60 transition-colors">
                       <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                       <p className="text-[11px] text-zinc-300 leading-relaxed">{rec}</p>
                     </div>
@@ -310,7 +310,7 @@ function HomeContent() {
   // Show hero page for unauthenticated users
   if (!user) {
     return (
-      <div className="min-h-screen bg-background relative overflow-hidden font-sans">
+      <div className="min-h-screen bg-background relative overflow-hidden font-sans pb-0">
         {/* Glowing Background Grids & Ambient Blobs */}
         <div className="absolute inset-0 bg-grid-pattern opacity-100 pointer-events-none" />
         <div className="absolute inset-0 ambient-glow pointer-events-none" />
@@ -321,24 +321,33 @@ function HomeContent() {
         <Navbar user={user} logout={logout} />
 
         {/* Hero Section */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 pt-7 sm:pt-14 pb-16 text-center relative z-10">
-          <div className="max-w-5xl mx-auto space-y-2 sm:space-y-4">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 pt-7 pb-10 md:pb-16 text-center relative z-10">
+          <div className="absolute top-[5%] left-1/2 -translate-x-1/2 w-[280px] h-[280px] bg-primary/10 blur-[80px] rounded-full -z-10 pointer-events-none block md:hidden" />
 
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-zinc-100 leading-[1.1] sm:leading-[1.05]">
+          <div className="max-w-5xl mx-auto flex flex-col items-center">
+
+            {/* Glowing Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-[10px] font-bold uppercase tracking-widest text-primary mb-5 sm:mb-6 animate-in fade-in slide-in-from-top-4 duration-1000 select-none">
+              <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+              <span>Agentic Business Intelligence</span>
+            </div>
+
+            <h2 className="text-4xl sm:text-6xl font-[950] tracking-tight text-zinc-100 leading-[1.15] sm:leading-[1.1] max-w-4xl text-balance">
               Transform Your Raw Data Into
-              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-primary via-fuchsia-400 to-cyan-400 select-none">
+              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-primary via-fuchsia-400 to-cyan-400 select-none pb-1 sm:pb-2">
                 Actionable Intelligence
               </span>
             </h2>
 
-            <p className="text-base sm:text-md text-zinc-400 max-w-3xl mx-auto leading-relaxed pt-2">
+            <p className="text-sm sm:text-base text-zinc-400 max-w-2xl leading-relaxed pt-3 sm:pt-4 px-4 sm:px-0 text-balance">
               Upload complex CSV datasets and converse with agentic workflows in natural language. Our autonomous AI profiles your schemas, queries data instantly, and renders high-end visualizations.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-3 sm:pt-4 max-w-md mx-auto">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-5 sm:pt-10 w-full max-w-md mx-auto">
               <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/95 text-primary-foreground font-bold px-8 py-6 rounded-xl text-sm shadow-xl shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-200 group flex items-center justify-center gap-2" asChild>
                 <Link href="/register">
                   Get Started Free
+                  <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-zinc-800 bg-zinc-950/20 text-zinc-300 hover:text-zinc-100 hover:bg-zinc-900/60 font-semibold px-8 py-6 rounded-xl text-sm transition-all duration-200 flex items-center justify-center gap-2" asChild>
@@ -351,16 +360,16 @@ function HomeContent() {
         </section>
 
         {/* Interactive App Mockup Section */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 pb-24 relative z-10">
-          <div className="relative rounded-2xl p-1 bg-gradient-to-b from-zinc-800/60 via-zinc-800/10 to-transparent">
-            <div className="absolute inset-0 bg-primary/5 blur-[80px] rounded-2xl pointer-events-none" />
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 pb-10 md:pb-24 relative z-10">
+          <div className="relative rounded-2xl md:p-1 md:bg-gradient-to-b md:from-zinc-800/60 md:via-zinc-800/10 md:to-transparent">
+            <div className="absolute inset-0 bg-primary/5 blur-[80px] rounded-2xl pointer-events-none hidden md:block" />
             <MockupDashboard />
           </div>
         </section>
 
         {/* Bento Grid Features Section */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-zinc-900 relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-20 border-t border-zinc-900 relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16 space-y-4">
             <h2 className="text-2xl sm:text-4xl font-extrabold text-zinc-100 tracking-tight">
               Supercharged with Autonomous Capabilities
             </h2>
@@ -369,9 +378,9 @@ function HomeContent() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
+          <div className="flex md:grid flex-row md:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto overflow-x-auto md:overflow-x-visible pb-4 md:pb-0 scrollbar-none px-4 md:px-0 -mx-4 md:mx-auto">
             {/* Feature 1 */}
-            <div className="group rounded-2xl border border-zinc-900 bg-zinc-950/40 p-8 flex flex-col gap-5 hover:border-zinc-800 hover:bg-zinc-900/10 transition-all duration-300 relative overflow-hidden text-left">
+            <div className="w-[290px] md:w-auto shrink-0 flex flex-col gap-5 rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 sm:p-8 hover:border-zinc-800 hover:bg-zinc-900/10 transition-all duration-300 relative overflow-hidden text-left">
               <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:scale-105 transition-transform duration-300">
                 <Database className="h-6 w-6" />
@@ -387,7 +396,7 @@ function HomeContent() {
             </div>
 
             {/* Feature 2 */}
-            <div className="group rounded-2xl border border-zinc-900 bg-zinc-950/40 p-8 flex flex-col gap-5 hover:border-zinc-800 hover:bg-zinc-900/10 transition-all duration-300 relative overflow-hidden text-left">
+            <div className="w-[290px] md:w-auto shrink-0 flex flex-col gap-5 rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 sm:p-8 hover:border-zinc-800 hover:bg-zinc-900/10 transition-all duration-300 relative overflow-hidden text-left">
               <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               <div className="h-12 w-12 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 group-hover:scale-105 transition-transform duration-300">
                 <Brain className="h-6 w-6" />
@@ -403,7 +412,7 @@ function HomeContent() {
             </div>
 
             {/* Feature 3 */}
-            <div className="group rounded-2xl border border-zinc-900 bg-zinc-950/40 p-8 flex flex-col gap-5 hover:border-zinc-800 hover:bg-zinc-900/10 transition-all duration-300 relative overflow-hidden text-left">
+            <div className="w-[290px] md:w-auto shrink-0 flex flex-col gap-5 rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 sm:p-8 hover:border-zinc-800 hover:bg-zinc-900/10 transition-all duration-300 relative overflow-hidden text-left">
               <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               <div className="h-12 w-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform duration-300">
                 <Sparkles className="h-6 w-6" />
@@ -421,8 +430,8 @@ function HomeContent() {
         </section>
 
         {/* How It Works Section */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-zinc-900 relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-20 border-t border-zinc-900 relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16 space-y-4">
             <h2 className="text-2xl sm:text-4xl font-extrabold text-zinc-100 tracking-tight">
               How InsightAgent Orchestrates Analysis
             </h2>
@@ -431,12 +440,12 @@ function HomeContent() {
             </p>
           </div>
 
-          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-            {/* Visual connector lines between steps in desktop */}
-            <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-primary/10 via-violet-500/10 to-transparent z-0 hidden md:block" />
+          <div className="flex md:grid flex-row md:grid-cols-3 gap-4 md:gap-12 max-w-5xl mx-auto overflow-x-auto md:overflow-x-visible pb-4 md:pb-0 scrollbar-none px-4 md:px-0 -mx-4 md:mx-auto relative">
+            {/* Visual connector lines between steps */}
+            <div className="absolute top-[48px] left-8 right-8 md:left-[10%] md:right-[10%] h-0.5 bg-gradient-to-r from-primary/20 via-violet-500/20 to-cyan-500/20 z-0" />
 
             {/* Step 1 */}
-            <div className="relative z-10 bg-background/80 p-6 rounded-2xl border border-zinc-900 text-center space-y-4">
+            <div className="w-[290px] md:w-auto shrink-0 relative z-10 bg-background/80 p-6 rounded-2xl border border-zinc-900 text-center space-y-4">
               <div className="h-12 w-12 rounded-full bg-primary text-primary-foreground font-black text-sm flex items-center justify-center mx-auto shadow-lg shadow-primary/20">
                 1
               </div>
@@ -447,7 +456,7 @@ function HomeContent() {
             </div>
 
             {/* Step 2 */}
-            <div className="relative z-10 bg-background/80 p-6 rounded-2xl border border-zinc-900 text-center space-y-4">
+            <div className="w-[290px] md:w-auto shrink-0 relative z-10 bg-background/80 p-6 rounded-2xl border border-zinc-900 text-center space-y-4">
               <div className="h-12 w-12 rounded-full bg-violet-600 text-zinc-100 font-black text-sm flex items-center justify-center mx-auto shadow-lg shadow-violet-600/20">
                 2
               </div>
@@ -458,7 +467,7 @@ function HomeContent() {
             </div>
 
             {/* Step 3 */}
-            <div className="relative z-10 bg-background/80 p-6 rounded-2xl border border-zinc-900 text-center space-y-4">
+            <div className="w-[290px] md:w-auto shrink-0 relative z-10 bg-background/80 p-6 rounded-2xl border border-zinc-900 text-center space-y-4">
               <div className="h-12 w-12 rounded-full bg-cyan-600 text-zinc-100 font-black text-sm flex items-center justify-center mx-auto shadow-lg shadow-cyan-600/20">
                 3
               </div>
@@ -471,7 +480,7 @@ function HomeContent() {
         </section>
 
         {/* Minimal Proposligo-Style Footer */}
-        <footer className="w-full border-t border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl py-8 px-4 sm:px-8 relative overflow-hidden z-10">
+        <footer className="w-full border-t border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl pt-8 pb-24 md:pb-8 px-4 sm:px-8 relative overflow-hidden z-10">
           {/* Background Glow */}
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-primary/5 blur-[120px] rounded-full -z-10" />
 
@@ -544,8 +553,8 @@ function HomeContent() {
       </Dialog>
 
       {/* Projects Section */}
-      <main className="container mx-auto px-4 py-12 relative z-10 max-w-6xl">
-        <div className="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-zinc-900/60 pb-6">
+      <main className="container mx-auto px-4 py-8 sm:py-12 relative z-10 max-w-6xl">
+        <div className="mb-6 sm:mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-zinc-900/60 pb-4 sm:pb-6">
           <div>
             <div className="flex items-center gap-2.5 mb-1.5">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-100 tracking-tight leading-none">
@@ -596,7 +605,7 @@ function HomeContent() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {projects.map((project) => (
               <Card
                 key={project.id}
