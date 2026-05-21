@@ -50,7 +50,7 @@ export function Navbar({
   return (
     <>
       {/* Top Desktop & Public Navbar (Hidden on mobile for logged-in users) */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${user ? 'hidden md:block' : ''}`}>
+      <header className={`sticky top-0 z-50 transition-all duration-300 ${user ? 'hidden md:block' : ''} bg-zinc-950/60 backdrop-blur-xl border-b border-zinc-800/40`}>
         {/* Neon Breathing Top Accent Line */}
         <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
 
@@ -70,18 +70,18 @@ export function Navbar({
 
           {/* Center: Inline Desktop Navigation Links (Only for logged-in users) */}
           {user && (
-            <nav className="hidden md:flex items-center gap-1.5 px-1.5 py-1 rounded-full border border-zinc-800/40 bg-zinc-900/30 backdrop-blur-sm shadow-inner">
+            <nav className="hidden md:flex items-center gap-4">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
                 return (
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 relative ${
-                      isActive
-                        ? 'bg-zinc-800 text-zinc-100 shadow-sm border border-zinc-700/30'
-                        : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/20'
-                    }`}
+                    className={`px-4 py-1.5 text-xs font-bold transition-all duration-300 relative ${
+                       isActive
+                         ? 'border-b-2 border-primary text-zinc-100'
+                         : 'text-zinc-400 hover:text-zinc-200'
+                     }`}
                   >
                     {link.name}
                   </Link>
@@ -102,16 +102,16 @@ export function Navbar({
             {/* Credits Balance Pack */}
             {user && (
               <Link
-                href="/pricing"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 transition-all duration-300 text-xs font-bold text-indigo-400 group shadow-lg shadow-indigo-500/2"
-              >
-                <span>{user.creditsBalance} credits</span>
-              </Link>
+                  href="/pricing"
+                  className="text-indigo-400 text-xs font-semibold hover:underline"
+                >
+                  <span>{user.creditsBalance} credits</span>
+                </Link>
             )}
 
             {/* Unauthenticated Sign In Button */}
             {!user && (
-              <Button variant="ghost" className="text-zinc-300 hover:text-zinc-100 transition-colors text-xs font-semibold px-4 py-2 border border-zinc-800/40 hover:border-zinc-700 bg-zinc-900/10 rounded-xl" asChild>
+              <Button asChild className="bg-primary text-primary-foreground text-xs font-semibold px-4 py-2 rounded-xl hover:bg-primary/90 transition-colors">
                 <Link href="/login">Sign In</Link>
               </Button>
             )}
@@ -216,115 +216,83 @@ export function Navbar({
 
       {/* Premium Mobile Floating Bottom Navigation Dock (Visible on mobile for authenticated global pages) */}
       {user && !title && (
-        <div className="md:hidden fixed bottom-4 inset-x-4 h-[64px] bg-zinc-950/80 backdrop-blur-xl border border-zinc-900/80 rounded-2xl z-50 flex items-center justify-around px-3 shadow-[0_8px_32px_rgba(0,0,0,0.6)]">
-          {/* Tab 1: Projects */}
-          <Link
-            href="/"
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all duration-300 active:scale-95 ${
-              pathname === '/'
-                ? 'bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]'
-                : 'text-zinc-400 hover:text-zinc-250 border border-transparent'
-            }`}
-          >
-            <Brain className="h-5.5 w-5.5" />
-            {pathname === '/' && (
-              <span className="text-[10px] font-bold tracking-wide uppercase">Projects</span>
-            )}
-          </Link>
-
-          {/* Tab 2: Usage */}
-          <Link
-            href="/usage"
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all duration-300 active:scale-95 ${
-              pathname === '/usage'
-                ? 'bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]'
-                : 'text-zinc-400 hover:text-zinc-250 border border-transparent'
-            }`}
-          >
-            <BarChart3 className="h-5.5 w-5.5" />
-            {pathname === '/usage' && (
-              <span className="text-[10px] font-bold tracking-wide uppercase">Usage</span>
-            )}
-          </Link>
-
-          {/* Tab 3: Pricing */}
-          <Link
-            href="/pricing"
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all duration-300 active:scale-95 ${
-              pathname === '/pricing'
-                ? 'bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]'
-                : 'text-zinc-400 hover:text-zinc-250 border border-transparent'
-            }`}
-          >
-            <Coins className="h-5.5 w-5.5" />
-            {pathname === '/pricing' && (
-              <span className="text-[10px] font-bold tracking-wide uppercase">Pricing</span>
-            )}
-          </Link>
-
-          {/* Tab 4: Profile Dropdown Menu Trigger (Upward facing menu) */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-zinc-400 hover:text-zinc-250 border border-transparent transition-all duration-300 active:scale-95">
-                <User className="h-5.5 w-5.5" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              side="top"
-              sideOffset={12}
-              className="w-52 border-zinc-800 bg-zinc-950/95 backdrop-blur-md shadow-2xl p-1.5 rounded-xl z-[60] animate-in slide-in-from-bottom-2 duration-200"
+        <div className="md:hidden fixed bottom-0 left-0 right-0 h-[64px] bg-zinc-950/80 backdrop-blur-xl border-t border-zinc-800/40 flex items-center justify-around px-3">
+            {/* Tab 1: Projects */}
+            <Link
+              href="/"
+              className={`flex flex-col items-center gap-1 px-3 py-2 transition-all duration-300 active:scale-95 ${
+                pathname === '/'
+                  ? 'text-primary'
+                  : 'text-zinc-400 hover:text-zinc-250'
+              }`}
             >
-              <DropdownMenuLabel className="px-2.5 py-2">
-                <div className="flex flex-col gap-0.5">
-                  <span className="font-semibold text-zinc-100 text-xs truncate">{user.name || 'User'}</span>
-                  <span className="text-[10px] text-zinc-400 font-normal truncate">{user.email}</span>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-zinc-800/80 my-1" />
-              <DropdownMenuItem
-                onClick={() => router.push('/')}
-                className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
+              <Brain className="h-5.5 w-5.5" />
+              <span className="text-[10px] font-bold uppercase tracking-wide">Projects</span>
+              {pathname === '/' && (<span className="absolute -bottom-1 h-1 w-1 rounded-full bg-primary"></span>)}
+            </Link>
+
+            {/* Tab 2: Usage */}
+            <Link
+              href="/usage"
+              className={`flex flex-col items-center gap-1 px-3 py-2 transition-all duration-300 active:scale-95 ${
+                pathname === '/usage'
+                  ? 'text-primary'
+                  : 'text-zinc-400 hover:text-zinc-250'
+              }`}
+            >
+              <BarChart3 className="h-5.5 w-5.5" />
+              <span className="text-[10px] font-bold uppercase tracking-wide">Usage</span>
+              {pathname === '/usage' && (<span className="absolute -bottom-1 h-1 w-1 rounded-full bg-primary"></span>)}
+            </Link>
+
+            {/* Tab 3: Pricing */}
+            <Link
+              href="/pricing"
+              className={`flex flex-col items-center gap-1 px-3 py-2 transition-all duration-300 active:scale-95 ${
+                pathname === '/pricing'
+                  ? 'text-primary'
+                  : 'text-zinc-400 hover:text-zinc-250'
+              }`}
+            >
+              <Coins className="h-5.5 w-5.5" />
+              <span className="text-[10px] font-bold uppercase tracking-wide">Pricing</span>
+              {pathname === '/pricing' && (<span className="absolute -bottom-1 h-1 w-1 rounded-full bg-primary"></span>)}
+            </Link>
+
+            {/* Tab 4: Profile */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex flex-col items-center gap-1 px-3 py-2 transition-all duration-300 active:scale-95 text-zinc-400 hover:text-zinc-250">
+                  <User className="h-5.5 w-5.5" />
+                  <span className="text-[10px] font-bold uppercase tracking-wide">Account</span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                side="top"
+                sideOffset={12}
+                className="w-52 border-zinc-800 bg-zinc-950/95 backdrop-blur-md shadow-2xl p-1.5 rounded-xl z-[60] animate-in slide-in-from-bottom-2 duration-200"
               >
-                Projects
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => router.push('/usage')}
-                className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
-              >
-                Usage & Limits
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => router.push('/pricing')}
-                className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
-              >
-                Pricing
-              </DropdownMenuItem>
-              {user.role === 'ADMIN' && (
-                <>
+                <DropdownMenuLabel className="px-2.5 py-2">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-semibold text-zinc-100 text-xs truncate">{user.name || 'User'}</span>
+                    <span className="text-[10px] text-zinc-400 font-normal truncate">{user.email}</span>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-zinc-800/80 my-1" />
+                <DropdownMenuItem onClick={() => router.push('/')} className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2">Projects</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/usage')} className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2">Usage & Limits</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/pricing')} className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2">Pricing</DropdownMenuItem>
+                {user.role === 'ADMIN' && (<>
                   <DropdownMenuSeparator className="bg-zinc-800/80 my-1" />
-                  <DropdownMenuItem
-                    onClick={() => router.push('/admin')}
-                    className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
-                  >
-                    Admin Dashboard
-                  </DropdownMenuItem>
-                </>
-              )}
-              <DropdownMenuSeparator className="bg-zinc-800/80 my-1" />
-              {logout && (
-                <DropdownMenuItem
-                  onClick={logout}
-                  className="rounded-lg text-xs font-medium text-rose-400 focus:bg-rose-500/10 focus:text-rose-300 cursor-pointer py-2"
-                >
-                  Logout
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                  <DropdownMenuItem onClick={() => router.push('/admin')} className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2">Admin Dashboard</DropdownMenuItem>
+                </>)}
+                <DropdownMenuSeparator className="bg-zinc-800/80 my-1" />
+                {logout && (<DropdownMenuItem onClick={logout} className="rounded-lg text-xs font-medium text-rose-400 focus:bg-rose-500/10 focus:text-rose-300 cursor-pointer py-2">Logout</DropdownMenuItem>)}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
       )}
     </>
   );
 }
-

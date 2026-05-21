@@ -106,8 +106,8 @@ function MockupDashboard() {
                 key={key}
                 onClick={() => setActiveTab(key)}
                 className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all duration-200 ${isSelected
-                    ? 'bg-primary/10 border-primary/40 text-primary shadow-lg shadow-primary/5'
-                    : 'bg-zinc-900/30 border-zinc-800/40 text-zinc-400 hover:bg-zinc-900/60 hover:text-zinc-200'
+                  ? 'bg-primary/10 border-primary/40 text-primary shadow-lg shadow-primary/5'
+                  : 'bg-zinc-900/30 border-zinc-800/40 text-zinc-400 hover:bg-zinc-900/60 hover:text-zinc-200'
                   }`}
               >
                 <div className="flex items-center gap-2.5 overflow-hidden">
@@ -485,18 +485,6 @@ function HomeContent() {
               </p>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-8 text-xs font-semibold text-zinc-400">
-              <Link href="#" className="hover:text-primary transition-colors">
-                Terms
-              </Link>
-              <Link href="#" className="hover:text-primary transition-colors">
-                Privacy
-              </Link>
-              <Link href="#" className="hover:text-primary transition-colors">
-                Contact
-              </Link>
-            </div>
-
             <div className="flex items-center gap-4 text-zinc-500 text-xs">
               <span>&copy; {new Date().getFullYear()} InsightAgent Inc. All rights reserved.</span>
             </div>
@@ -516,14 +504,14 @@ function HomeContent() {
       <div className="absolute bottom-[10%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-cyan-600/5 blur-[140px] pointer-events-none" />
 
       {/* Unified Premium Navbar */}
-      <Navbar 
-        user={user} 
-        logout={logout} 
+      <Navbar
+        user={user}
+        logout={logout}
         actions={
           <Button onClick={() => setDialogOpen(true)} className="gap-2 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground py-5 px-5 rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200">
             New Project
           </Button>
-        } 
+        }
       />
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -573,10 +561,10 @@ function HomeContent() {
               Manage and analyze your dynamic CSV datasets with autonomous agentic intelligence.
             </p>
           </div>
-          
+
           {!isLoading && projects.length > 0 && (
-            <Button 
-              onClick={() => setDialogOpen(true)} 
+            <Button
+              onClick={() => setDialogOpen(true)}
               className="w-full sm:w-auto gap-2 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground py-5 px-5 rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200"
             >
               Create New Project
@@ -599,7 +587,7 @@ function HomeContent() {
               <p className="text-xs text-zinc-400 mb-8 max-w-sm leading-relaxed">
                 Connect and upload CSV datasets to explore them instantly using native, natural conversations with autonomous AI agents.
               </p>
-              <Button 
+              <Button
                 onClick={() => setDialogOpen(true)}
                 className="gap-2 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground py-5 px-6 rounded-xl shadow-xl shadow-primary/10 hover:-translate-y-0.5 transition-all duration-200"
               >
@@ -616,7 +604,7 @@ function HomeContent() {
                 onClick={() => router.push(`/projects/${project.id}`)}
               >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                
+
                 <CardHeader className="p-5 pb-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3.5 min-w-0 flex-1">
@@ -632,7 +620,7 @@ function HomeContent() {
                         </CardDescription>
                       </div>
                     </div>
-                    
+
                     <Button
                       variant="ghost"
                       size="icon"
@@ -644,17 +632,17 @@ function HomeContent() {
                     </Button>
                   </div>
                 </CardHeader>
-                
+
                 <div className="px-5 pb-5 pt-3 border-t border-zinc-900/60 flex items-center justify-between text-[11px] font-semibold text-zinc-400">
                   <div className="flex items-center gap-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     <span>
-                      {(project.tables?.length ?? 0) === 0 
-                        ? 'No Files' 
+                      {(project.tables?.length ?? 0) === 0
+                        ? 'No Files'
                         : (project.tables?.length === 1 ? '1 CSV File' : `${project.tables?.length} CSV Files`)}
                     </span>
                   </div>
-                  
+
                   <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest group-hover:translate-x-0.5 transition-transform duration-200 flex items-center gap-0.5">
                     Enter Workspace
                   </span>
