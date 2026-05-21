@@ -4,8 +4,8 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  Plus, FolderOpen, Trash2, Loader2, Brain, Database, Sparkles,ArrowRight,
-  CheckCircle2, ChevronRight, Mail, Terminal, BarChart2, Play, ShieldCheck,Globe, Github, Linkedin, Twitter
+  FolderOpen, Trash2, Loader2, Brain, Database, Sparkles,
+  CheckCircle2, ChevronRight, Terminal, BarChart2, ShieldCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
@@ -339,13 +339,11 @@ function HomeContent() {
               <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/95 text-primary-foreground font-bold px-8 py-6 rounded-xl text-sm shadow-xl shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-200 group flex items-center justify-center gap-2" asChild>
                 <Link href="/register">
                   Get Started Free
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-zinc-800 bg-zinc-950/20 text-zinc-300 hover:text-zinc-100 hover:bg-zinc-900/60 font-semibold px-8 py-6 rounded-xl text-sm transition-all duration-200 flex items-center justify-center gap-2" asChild>
                 <Link href="/login">
                   Live Playground
-                  <Play className="h-3.5 w-3.5 text-zinc-400" />
                 </Link>
               </Button>
             </div>
@@ -472,95 +470,35 @@ function HomeContent() {
           </div>
         </section>
 
-        {/* Detailed Premium Footer */}
-        <footer className="border-t border-zinc-800/80 bg-zinc-950/80 py-16 relative z-10">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 mb-12 text-left">
-              {/* Brand and Description Column */}
-              <div className="lg:col-span-2 space-y-5">
-                <div className="flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center">
-                    <Brain className="h-5 w-5 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-zinc-100 tracking-tight">InsightAgent</h3>
-                    <p className="text-[10px] text-zinc-400 uppercase font-medium tracking-wide">Agentic Analytics</p>
-                  </div>
-                </div>
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  Autonomous agentic business intelligence that unlocks premium, deep insights from datasets without complex programming.
-                </p>
-                {/* Live System Status */}
-                <div className="flex items-center gap-2.5 pt-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse-glow" />
-                  <span className="text-[11px] font-medium text-zinc-400">All Systems Operational</span>
-                </div>
-              </div>
+        {/* Minimal Proposligo-Style Footer */}
+        <footer className="w-full border-t border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl py-8 px-4 sm:px-8 relative overflow-hidden z-10">
+          {/* Background Glow */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-primary/5 blur-[120px] rounded-full -z-10" />
 
-              {/* Links Column 1: Product */}
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold text-zinc-200 uppercase tracking-widest">Product</h4>
-                <ul className="space-y-2.5 text-xs text-zinc-400">
-                  <li><Link href="/" className="hover:text-primary transition-colors">Projects Dashboard</Link></li>
-                  <li><Link href="/pricing" className="hover:text-primary transition-colors">Pricing Options</Link></li>
-                  <li><span className="text-zinc-650 cursor-not-allowed select-none">API Access (Beta)</span></li>
-                  <li><span className="text-zinc-650 cursor-not-allowed select-none">Integrations</span></li>
-                </ul>
-              </div>
-
-              {/* Links Column 2: Resources */}
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold text-zinc-200 uppercase tracking-widest">Resources</h4>
-                <ul className="space-y-2.5 text-xs text-zinc-400">
-                  <li><span className="text-zinc-400 cursor-pointer hover:text-primary transition-colors">Documentation</span></li>
-                  <li><span className="text-zinc-400 cursor-pointer hover:text-primary transition-colors">Help Center</span></li>
-                  <li><span className="text-zinc-400 cursor-pointer hover:text-primary transition-colors">Data Privacy Hub</span></li>
-                  <li><span className="text-zinc-400 cursor-pointer hover:text-primary transition-colors">Developer Blog</span></li>
-                </ul>
-              </div>
-
-              {/* Links Column 3: Legal */}
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold text-zinc-200 uppercase tracking-widest">Legal</h4>
-                <ul className="space-y-2.5 text-xs text-zinc-400">
-                  <li><span className="text-zinc-400 cursor-pointer hover:text-primary transition-colors">Terms of Service</span></li>
-                  <li><span className="text-zinc-400 cursor-pointer hover:text-primary transition-colors">Privacy Policy</span></li>
-                  <li><span className="text-zinc-400 cursor-pointer hover:text-primary transition-colors">Security Controls</span></li>
-                  <li><span className="text-zinc-400 cursor-pointer hover:text-primary transition-colors">GDPR / Compliance</span></li>
-                </ul>
-              </div>
-
-              {/* Links Column 4: Newsletter Waitlist */}
-              <div className="space-y-4 md:col-span-2 lg:col-span-1">
-                <h4 className="text-xs font-bold text-zinc-200 uppercase tracking-widest">Stay Updated</h4>
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  Join our weekly digest for cutting-edge intelligence tips.
-                </p>
-                <div className="space-y-2 pt-1">
-                  <div className="relative">
-                    <Input
-                      placeholder="you@email.com"
-                      className="bg-zinc-950 border-zinc-800 text-zinc-300 placeholder-zinc-600 rounded-lg text-xs py-5 pl-3 pr-10 focus:border-primary/50 focus:ring-primary/20 w-full"
-                    />
-                    <button className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center transition-colors active:scale-95">
-                      <Mail className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="flex flex-col items-center md:items-start gap-2">
+              <Link href="/" className="text-xl font-extrabold bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent tracking-tight">
+                InsightAgent
+              </Link>
+              <p className="text-zinc-500 text-xs max-w-xs text-center md:text-start leading-relaxed">
+                Autonomous agentic business intelligence that unlocks premium, deep insights from datasets.
+              </p>
             </div>
 
-            {/* Bottom Row */}
-            <div className="pt-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
-              <div>
-                © {new Date().getFullYear()} InsightAgent Inc. All rights reserved.
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="hover:text-primary cursor-pointer transition-colors"><Globe className="h-4 w-4" /></span>
-                <span className="hover:text-primary cursor-pointer transition-colors"><Github className="h-4 w-4" /></span>
-                <span className="hover:text-primary cursor-pointer transition-colors"><Twitter className="h-4 w-4" /></span>
-                <span className="hover:text-primary cursor-pointer transition-colors"><Linkedin className="h-4 w-4" /></span>
-              </div>
+            <div className="flex flex-wrap justify-center gap-8 text-xs font-semibold text-zinc-400">
+              <Link href="#" className="hover:text-primary transition-colors">
+                Terms
+              </Link>
+              <Link href="#" className="hover:text-primary transition-colors">
+                Privacy
+              </Link>
+              <Link href="#" className="hover:text-primary transition-colors">
+                Contact
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-4 text-zinc-500 text-xs">
+              <span>&copy; {new Date().getFullYear()} InsightAgent Inc. All rights reserved.</span>
             </div>
           </div>
         </footer>
@@ -583,7 +521,6 @@ function HomeContent() {
         logout={logout} 
         actions={
           <Button onClick={() => setDialogOpen(true)} className="gap-2 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground py-5 px-5 rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200">
-            <Plus className="h-4 w-4" />
             New Project
           </Button>
         } 
@@ -642,7 +579,6 @@ function HomeContent() {
               onClick={() => setDialogOpen(true)} 
               className="w-full sm:w-auto gap-2 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground py-5 px-5 rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200"
             >
-              <Plus className="h-4 w-4" />
               Create New Project
             </Button>
           )}
@@ -667,7 +603,6 @@ function HomeContent() {
                 onClick={() => setDialogOpen(true)}
                 className="gap-2 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground py-5 px-6 rounded-xl shadow-xl shadow-primary/10 hover:-translate-y-0.5 transition-all duration-200"
               >
-                <Plus className="h-4 w-4" />
                 Create Your First Project
               </Button>
             </CardContent>
@@ -722,7 +657,6 @@ function HomeContent() {
                   
                   <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest group-hover:translate-x-0.5 transition-transform duration-200 flex items-center gap-0.5">
                     Enter Workspace
-                    <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>
               </Card>

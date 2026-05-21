@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  Brain, Coins, User, LogOut, BarChart3, Shield, ArrowLeft
+  Brain, Coins, User, BarChart3, ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -63,14 +63,9 @@ export function Navbar({
                 <Brain className="h-4.5 w-4.5 text-indigo-400 group-hover:scale-110 transition-transform duration-300" />
               </div>
             </div>
-            <div className="flex flex-col">
-              <span className="font-extrabold text-sm tracking-tight text-zinc-100 group-hover:text-white transition-colors">
-                InsightAgent
-              </span>
-              <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider -mt-0.5">
-                Agentic BI
-              </span>
-            </div>
+            <span className="font-extrabold text-sm tracking-tight text-zinc-100 group-hover:text-white transition-colors">
+              InsightAgent
+            </span>
           </Link>
 
           {/* Center: Inline Desktop Navigation Links (Only for logged-in users) */}
@@ -110,7 +105,6 @@ export function Navbar({
                 href="/pricing"
                 className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 transition-all duration-300 text-xs font-bold text-indigo-400 group shadow-lg shadow-indigo-500/2"
               >
-                <Coins className="h-3.5 w-3.5 animate-pulse text-indigo-400 group-hover:scale-110 transition-transform duration-300" />
                 <span>{user.creditsBalance} credits</span>
               </Link>
             )}
@@ -146,21 +140,18 @@ export function Navbar({
                     onClick={() => router.push('/')}
                     className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
                   >
-                    <Brain className="mr-2 h-4 w-4 text-zinc-400" />
                     Projects
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => router.push('/usage')}
                     className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
                   >
-                    <BarChart3 className="mr-2 h-4 w-4 text-zinc-400" />
                     Usage & Limits
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => router.push('/pricing')}
                     className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
                   >
-                    <Coins className="mr-2 h-4 w-4 text-zinc-400" />
                     Pricing
                   </DropdownMenuItem>
                   {user.role === 'ADMIN' && (
@@ -170,7 +161,6 @@ export function Navbar({
                         onClick={() => router.push('/admin')}
                         className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
                       >
-                        <Shield className="mr-2 h-4 w-4 text-zinc-400" />
                         Admin Dashboard
                       </DropdownMenuItem>
                     </>
@@ -181,7 +171,6 @@ export function Navbar({
                       onClick={logout}
                       className="rounded-lg text-xs font-medium text-rose-400 focus:bg-rose-500/10 focus:text-rose-300 cursor-pointer py-2"
                     >
-                      <LogOut className="mr-2 h-4 w-4" />
                       Logout
                     </DropdownMenuItem>
                   )}
@@ -297,21 +286,18 @@ export function Navbar({
                 onClick={() => router.push('/')}
                 className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
               >
-                <Brain className="mr-2 h-4 w-4 text-zinc-400" />
                 Projects
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => router.push('/usage')}
                 className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
               >
-                <BarChart3 className="mr-2 h-4 w-4 text-zinc-400" />
                 Usage & Limits
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => router.push('/pricing')}
                 className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
               >
-                <Coins className="mr-2 h-4 w-4 text-zinc-400" />
                 Pricing
               </DropdownMenuItem>
               {user.role === 'ADMIN' && (
@@ -321,7 +307,6 @@ export function Navbar({
                     onClick={() => router.push('/admin')}
                     className="rounded-lg text-xs font-medium text-zinc-300 focus:bg-zinc-900 focus:text-zinc-100 cursor-pointer py-2"
                   >
-                    <Shield className="mr-2 h-4 w-4 text-zinc-400" />
                     Admin Dashboard
                   </DropdownMenuItem>
                 </>
@@ -332,7 +317,6 @@ export function Navbar({
                   onClick={logout}
                   className="rounded-lg text-xs font-medium text-rose-400 focus:bg-rose-500/10 focus:text-rose-300 cursor-pointer py-2"
                 >
-                  <LogOut className="mr-2 h-4 w-4" />
                   Logout
                 </DropdownMenuItem>
               )}

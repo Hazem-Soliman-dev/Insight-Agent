@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Brain, LayoutDashboard, Users, TrendingUp, DollarSign, X, ArrowLeft } from 'lucide-react';
+import { Brain, LayoutDashboard, Users, TrendingUp, DollarSign, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
@@ -28,14 +28,9 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg shadow-primary/20 transition-all duration-300 group-hover:scale-105">
             <Brain className="h-5.5 w-5.5 text-primary-foreground animate-pulse-glow" />
           </div>
-          <div>
-            <h1 className="font-bold text-base tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
-              InsightAgent
-            </h1>
-            <p className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
-              Admin Panel
-            </p>
-          </div>
+          <h1 className="font-bold text-base tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+            InsightAgent
+          </h1>
         </Link>
         {onClose && (
           <button
@@ -69,10 +64,6 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
                 <span className="absolute left-0 w-1 h-0 bg-primary/60 rounded-r-md transition-all duration-200 group-hover:h-6" />
               )}
               
-              <item.icon className={cn(
-                'h-5 w-5 transition-transform duration-300 group-hover:scale-110',
-                isActive ? 'text-primary-foreground' : 'text-muted-foreground/80 group-hover:text-primary'
-              )} />
               <span className="font-semibold text-sm">{item.name}</span>
             </Link>
           );
@@ -85,7 +76,6 @@ export default function AdminSidebar({ isOpen = false, onClose }: AdminSidebarPr
           href="/"
           className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:text-primary rounded-xl hover:bg-accent/40 transition-all duration-200 group"
         >
-          <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
           <span>Back to App</span>
         </Link>
       </div>

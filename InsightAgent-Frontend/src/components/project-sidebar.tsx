@@ -1,6 +1,6 @@
 'use client';
 
-import { FileSpreadsheet, Trash2, Eye } from 'lucide-react';
+import { Trash2, Eye } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -32,7 +32,6 @@ export function ProjectSidebar({
         <div className="p-3 space-y-1.5">
           {tables.length === 0 ? (
             <div className="p-6 text-center text-zinc-500 text-xs">
-              <FileSpreadsheet className="h-9 w-9 mx-auto mb-3 opacity-30 text-zinc-400" />
               <p className="font-semibold text-zinc-400">No datasets uploaded</p>
               <p className="text-[10px] mt-1 text-zinc-500">Upload CSV files above to begin.</p>
             </div>
@@ -43,9 +42,6 @@ export function ProjectSidebar({
                 onClick={() => onPreviewTable(table.tableName)}
                 className="group flex items-center gap-3 p-2.5 rounded-xl hover:bg-zinc-900/60 border border-transparent hover:border-zinc-800/40 transition-all duration-200 cursor-pointer"
               >
-                <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 group-hover:scale-105 transition-transform duration-200">
-                  <FileSpreadsheet className="h-4.5 w-4.5" />
-                </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-bold text-zinc-300 group-hover:text-zinc-100 transition-colors truncate leading-tight">
                     {table.originalName}
