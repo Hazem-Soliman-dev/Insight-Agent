@@ -3,11 +3,15 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule, { rawBody: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { rawBody: true });
+
+  // Trust proxy for correct rate limiting IP detection behind reverse proxies (like Railway)
+  app.set('trust proxy', 1);
 
   // Security: Helmet for HTTP headers
   app.use(helmet());
@@ -23,6 +27,8 @@ async function bootstrap() {
       },
       standardHeaders: true,
       legacyHeaders: false,
+      // Skip rate limiting for health check endpoint to prevent Railway health check failures
+      skip: (req) => req.path === '/api/health' || req.originalUrl === '/api/health',
     }),
   );
 
