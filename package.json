@@ -1,0 +1,10 @@
+{
+  "name": "insight-agent-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "push:backend": "git subtree push --prefix=InsightAgent-Backend backend main",
+    "push:frontend": "git subtree push --prefix=InsightAgent-Frontend frontend main",
+    "push:all": "npm run push:backend && npm run push:frontend"
+  }
+}
