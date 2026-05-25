@@ -36,7 +36,7 @@ import {
   Scatter,
   LabelList,
 } from 'recharts';
-import { TableIcon, BarChart3, Code, Lightbulb, TrendingUp, Search, GitCompare, AlertTriangle, Sparkles, FileText } from 'lucide-react';
+import { TableIcon, BarChart3, Code, Lightbulb, TrendingUp, Search, GitCompare, AlertTriangle, Sparkles, FileText, Copy, Check } from 'lucide-react';
 import type { QueryResult, Recommendation } from '@/types';
 import { toast } from 'sonner';
 
@@ -93,7 +93,15 @@ export function ResultDisplay({ result, question, onRecommendationClick }: Resul
   const [activeBarIndex, setActiveBarIndex] = useState<number | null>(null);
   const [activePieIndex, setActivePieIndex] = useState<number | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [copied, setCopied] = useState(false);
   const uniqueId = React.useId().replace(/:/g, '');
+
+  const handleCopySql = () => {
+    navigator.clipboard.writeText(sql);
+    setCopied(true);
+    toast.success('SQL copied to clipboard');
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleExportPDF = () => {
     try {
@@ -681,58 +689,59 @@ export function ResultDisplay({ result, question, onRecommendationClick }: Resul
     <div className="space-y-4">
       {/* Summary */}
       {summary && (
-        <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
-          <p className="text-sm">{summary}</p>
+        <div className="p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/15 shadow-sm flex items-start gap-3 animate-in fade-in duration-300">
+          <Sparkles className="h-5 w-5 text-indigo-400 shrink-0 mt-0.5" />
+          <p className="text-xs font-semibold text-zinc-300 leading-relaxed">{summary}</p>
         </div>
       )}
 
       {/* Main Results Card */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base">Query Results</CardTitle>
+      <Card className="border border-white/5 bg-zinc-900/15 backdrop-blur-md rounded-2xl shadow-xl">
+        <CardHeader className="pb-4 px-6 pt-5">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <CardTitle className="text-xs font-extrabold text-zinc-200 uppercase tracking-wider">Query Results</CardTitle>
             <div className="flex items-center gap-2">
-              <Badge variant="secondary">{rowCount} rows</Badge>
-              <Badge variant="outline">{executionTime}ms</Badge>
+              <Badge variant="secondary" className="bg-zinc-950/80 border border-zinc-900 text-zinc-350 text-[10px] font-extrabold px-2.5 py-0.5 uppercase tracking-wide">{rowCount} rows</Badge>
+              <Badge variant="outline" className="border-white/5 text-zinc-450 text-[10px] font-bold px-2 py-0.5">{executionTime}ms</Badge>
               
               <Button 
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                className="h-8 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs transition-colors shadow-xs font-semibold"
+                className="h-8 px-3 rounded-xl gap-1.5 bg-indigo-650 hover:bg-indigo-750 text-white text-[10px] font-extrabold uppercase tracking-wider transition-all duration-200 shadow-md shadow-indigo-600/15 hover:-translate-y-0.5 border border-indigo-500/20"
               >
                 <FileText className="h-3.5 w-3.5" />
-                <span>{isExporting ? 'Generating PDF...' : 'Download PDF'}</span>
+                <span>{isExporting ? 'Exporting...' : 'PDF Report'}</span>
               </Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <Tabs defaultValue={showChart ? 'chart' : 'table'}>
-            <TabsList className="mb-4">
-              <TabsTrigger value="table" className="gap-2">
-                <TableIcon className="h-4 w-4" />
-                Table
+        <CardContent className="px-6 pb-6">
+          <Tabs defaultValue={showChart ? 'chart' : 'table'} className="w-full">
+            <TabsList className="mb-5 bg-zinc-950/40 border border-zinc-900 rounded-xl p-1 h-auto gap-0.5">
+              <TabsTrigger value="table" className="gap-2 py-2 px-3.5 text-xs font-bold text-zinc-400 data-[state=active]:bg-indigo-600 data-[state=active]:text-white rounded-lg transition-all duration-200">
+                <TableIcon className="h-3.5 w-3.5" />
+                Table Preview
               </TabsTrigger>
               {showChart && (
-                <TabsTrigger value="chart" className="gap-2">
-                  <BarChart3 className="h-4 w-4" />
-                  Chart
+                <TabsTrigger value="chart" className="gap-2 py-2 px-3.5 text-xs font-bold text-zinc-400 data-[state=active]:bg-indigo-600 data-[state=active]:text-white rounded-lg transition-all duration-200">
+                  <BarChart3 className="h-3.5 w-3.5" />
+                  Visual Chart
                 </TabsTrigger>
               )}
-              <TabsTrigger value="sql" className="gap-2">
-                <Code className="h-4 w-4" />
-                SQL
+              <TabsTrigger value="sql" className="gap-2 py-2 px-3.5 text-xs font-bold text-zinc-400 data-[state=active]:bg-indigo-600 data-[state=active]:text-white rounded-lg transition-all duration-200">
+                <Code className="h-3.5 w-3.5" />
+                SQL Query
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="table">
-              <ScrollArea className="w-full max-w-[calc(100vw-3rem)] md:max-w-full">
-                <div className="max-h-[400px]">
+              <ScrollArea className="w-full max-w-[calc(100vw-3rem)] md:max-w-full rounded-xl border border-zinc-900 bg-zinc-950/20">
+                <div className="max-h-[350px]">
                   <Table>
-                    <TableHeader>
-                      <TableRow>
+                    <TableHeader className="bg-zinc-950/80 sticky top-0 z-10">
+                      <TableRow className="border-b border-zinc-900 hover:bg-transparent">
                         {columns.map((col) => (
-                          <TableHead key={col} className="whitespace-nowrap">
+                          <TableHead key={col} className="whitespace-nowrap text-zinc-400 font-extrabold uppercase tracking-widest text-[9px] py-3.5 px-4">
                             {col}
                           </TableHead>
                         ))}
@@ -740,9 +749,9 @@ export function ResultDisplay({ result, question, onRecommendationClick }: Resul
                     </TableHeader>
                     <TableBody>
                       {data.slice(0, 100).map((row, idx) => (
-                        <TableRow key={idx}>
+                        <TableRow key={idx} className="border-b border-zinc-900/50 hover:bg-zinc-900/10 transition-colors">
                           {columns.map((col) => (
-                            <TableCell key={col} className="whitespace-nowrap">
+                            <TableCell key={col} className="whitespace-nowrap text-xs text-zinc-350 py-3 px-4">
                               {String(row[col] ?? '')}
                             </TableCell>
                           ))}
@@ -754,7 +763,7 @@ export function ResultDisplay({ result, question, onRecommendationClick }: Resul
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
               {rowCount > 100 && (
-                <p className="text-sm text-muted-foreground mt-2 text-center">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 mt-3 text-center">
                   Showing first 100 of {rowCount} rows
                 </p>
               )}
@@ -765,9 +774,23 @@ export function ResultDisplay({ result, question, onRecommendationClick }: Resul
             )}
 
             <TabsContent value="sql">
-              <pre className="p-4 rounded-lg bg-muted font-mono text-sm overflow-x-auto">
-                {sql}
-              </pre>
+              <div className="relative border border-zinc-900 rounded-xl overflow-hidden bg-zinc-950/85 shadow-inner">
+                <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-900 bg-zinc-950/40">
+                  <span className="text-[9px] font-extrabold text-zinc-550 uppercase tracking-widest">Active Database SQL Dialect</span>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-7.5 w-7.5 text-zinc-400 hover:text-zinc-200 rounded-md border border-transparent hover:border-zinc-800"
+                    onClick={handleCopySql}
+                    title="Copy SQL Query"
+                  >
+                    {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                  </Button>
+                </div>
+                <pre className="p-4 font-mono text-xs text-indigo-350 overflow-x-auto max-h-[300px] leading-relaxed scrollbar-thin">
+                  <code>{sql}</code>
+                </pre>
+              </div>
             </TabsContent>
           </Tabs>
         </CardContent>
@@ -775,16 +798,16 @@ export function ResultDisplay({ result, question, onRecommendationClick }: Resul
 
       {/* Recommendations */}
       {recommendations && recommendations.length > 0 && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
+        <Card className="border border-white/5 bg-zinc-900/15 backdrop-blur-md rounded-2xl shadow-xl">
+          <CardHeader className="pb-4 px-6 pt-5">
+            <CardTitle className="text-xs font-extrabold text-zinc-200 uppercase tracking-wider flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-indigo-400" />
               Recommended Next Steps
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[300px]">
-              <div className="grid gap-2">
+          <CardContent className="px-6 pb-6">
+            <ScrollArea className="h-[240px] pr-2">
+              <div className="grid gap-2.5">
                 {recommendations.map((rec, idx) => {
                   const Icon = getRecommendationIcon(rec.type);
                   const colorClass = getRecommendationColor(rec.type);
@@ -793,16 +816,18 @@ export function ResultDisplay({ result, question, onRecommendationClick }: Resul
                     <Button
                       key={idx}
                       variant="ghost"
-                      className={`h-auto p-3 justify-start text-left border ${colorClass} hover:opacity-80`}
+                      className={`h-auto p-3.5 justify-start text-left border rounded-xl hover:-translate-y-0.5 transition-all duration-200 ${colorClass} hover:bg-zinc-900/30 cursor-pointer`}
                       onClick={() => onRecommendationClick?.(rec.question)}
                     >
                       <div className="flex items-start gap-3 w-full">
-                        <Icon className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm">{rec.question}</p>
-                          <p className="text-xs opacity-75 mt-0.5">{rec.description}</p>
+                        <div className="p-1.5 rounded-lg bg-zinc-950/40 border border-current opacity-70 shrink-0">
+                          <Icon className="h-3.5 w-3.5" />
                         </div>
-                        <Badge variant="outline" className="text-[10px] flex-shrink-0">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold leading-normal truncate">{rec.question}</p>
+                          <p className="text-[10px] opacity-60 font-semibold mt-1 leading-normal">{rec.description}</p>
+                        </div>
+                        <Badge variant="outline" className="text-[9px] font-extrabold uppercase tracking-wider flex-shrink-0 border-current/20">
                           {rec.type}
                         </Badge>
                       </div>

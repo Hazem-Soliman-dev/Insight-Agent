@@ -105,47 +105,47 @@ function MockupDashboard() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`flex-1 shrink-0 md:w-full flex items-center justify-between p-3 rounded-xl border border-zinc-900/40 md:border-zinc-800/40 text-left transition-all duration-200 min-w-[160px] md:min-w-0 ${isSelected
-                  ? 'bg-primary/10 border-primary/40 text-primary shadow-lg shadow-primary/5'
-                  : 'bg-zinc-900/30 border-zinc-800/40 text-zinc-400 hover:bg-zinc-900/60 hover:text-zinc-200'
+                className={`flex-1 shrink-0 md:w-full flex items-center justify-between p-3 rounded-xl border transition-all duration-300 min-w-[160px] md:min-w-0 ${isSelected
+                  ? 'bg-indigo-500/10 border-indigo-500/35 text-indigo-300 shadow-[0_0_20px_rgba(99,102,241,0.06)] md:translate-x-1'
+                  : 'bg-zinc-900/20 border-white/5 text-zinc-400 hover:bg-zinc-900/55 hover:text-zinc-200 hover:border-zinc-800'
                   }`}
               >
                 <div className="flex items-center gap-2.5 overflow-hidden">
-                  <Database className={`h-4 w-4 shrink-0 ${isSelected ? 'text-primary' : 'text-zinc-500'}`} />
+                  <Database className={`h-4 w-4 shrink-0 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
                   <div className="truncate">
-                    <p className={`text-xs font-bold ${isSelected ? 'text-zinc-100' : 'text-zinc-300'}`}>{data.fileName}</p>
-                    <p className="text-[10px] text-zinc-500">{data.rows}</p>
+                    <p className={`text-xs font-extrabold ${isSelected ? 'text-zinc-100' : 'text-zinc-300'}`}>{data.fileName}</p>
+                    <p className="text-[10px] text-zinc-500 font-semibold">{data.rows}</p>
                   </div>
                 </div>
-                <ChevronRight className={`h-3 w-3 shrink-0 transition-transform ${isSelected ? 'text-primary translate-x-0.5' : 'text-zinc-600'} hidden md:block`} />
+                <ChevronRight className={`h-3 w-3 shrink-0 transition-transform ${isSelected ? 'text-indigo-450 translate-x-0.5' : 'text-zinc-600'} hidden md:block`} />
               </button>
             );
           })}
         </div>
 
         {/* Sidebar Info Section */}
-        <div className="mt-auto hidden md:flex flex-col gap-3.5 p-3 rounded-xl border border-zinc-800/50 bg-zinc-900/20">
+        <div className="mt-auto hidden md:flex flex-col gap-3.5 p-3.5 rounded-xl border border-white/5 bg-zinc-900/10">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" />
-            <span className="text-[11px] font-semibold text-zinc-300">HIPAA Compliant Env</span>
+            <span className="text-[11px] font-bold text-zinc-300">HIPAA Compliant Env</span>
           </div>
-          <p className="text-[10px] text-zinc-500 leading-relaxed">
+          <p className="text-[10px] text-zinc-500 leading-relaxed font-medium">
             All user datasets are encrypted at rest with AES-256 and subject to row-level isolation policies.
           </p>
         </div>
       </div>
 
       {/* Main Panel: Interactive Chat & Dashboard Output */}
-      <div className="flex-1 flex flex-col bg-zinc-950/20 overflow-hidden">
+      <div className="flex-1 flex flex-col bg-zinc-950/10 overflow-hidden">
 
         {/* Playground Top Info Bar */}
-        <div className="border-b border-zinc-800/40 py-3 md:py-4 px-0 md:px-6 flex flex-row items-center justify-between gap-3 bg-transparent md:bg-zinc-950/30">
+        <div className="border-b border-white/5 py-3 md:py-4 px-0 md:px-6 flex flex-row items-center justify-between gap-3 bg-transparent md:bg-zinc-950/20">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse-glow" />
             <span className="text-xs font-bold text-zinc-300">Autonomous BI Agent: Active</span>
           </div>
-          <div className="flex items-center gap-2 text-[11px] text-zinc-400 font-semibold px-2.5 py-1 rounded bg-zinc-900 border border-zinc-800">
-            <Terminal className="h-3 w-3 text-primary" />
+          <div className="flex items-center gap-2 text-[11px] text-zinc-400 font-bold px-2.5 py-1 rounded bg-zinc-900 border border-zinc-800">
+            <Terminal className="h-3 w-3 text-indigo-400" />
             <span>Schema: auto-profiled</span>
           </div>
         </div>
@@ -155,32 +155,32 @@ function MockupDashboard() {
 
           {/* User Request Bubble */}
           <div className="flex items-start gap-2.5 max-w-[95%] md:max-w-[85%] self-end">
-            <div className="bg-primary hover:bg-primary/95 text-primary-foreground p-3 md:p-3.5 rounded-2xl rounded-tr-sm shadow-md">
+            <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-550 hover:to-indigo-450 text-white p-3.5 md:p-4 rounded-2xl rounded-tr-sm shadow-lg shadow-indigo-600/10 transition-all duration-200">
               <p className="text-xs font-bold leading-relaxed">{current.query}</p>
             </div>
-            <div className="h-8 w-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-300 shrink-0 select-none">
+            <div className="h-8.5 w-8.5 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-center justify-center text-xs font-extrabold text-indigo-450 shrink-0 select-none shadow-md">
               U
             </div>
           </div>
 
           {/* AI Response Bubble */}
           <div className="flex items-start gap-2.5 max-w-[98%] md:max-w-[90%]">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center text-primary-foreground shrink-0 shadow shadow-primary/25 select-none">
+            <div className="h-8.5 w-8.5 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-indigo-500/20 select-none">
               <Brain className="h-4.5 w-4.5" />
             </div>
             <div className="flex-1 space-y-4">
-              <div className="bg-zinc-900 border border-zinc-800/50 p-3.5 md:p-4 rounded-2xl rounded-tl-sm shadow-lg shadow-black/10">
-                <p className="text-xs text-zinc-300 leading-relaxed">{current.response}</p>
+              <div className="bg-zinc-900/40 backdrop-blur-md border border-white/5 p-4 rounded-2xl rounded-tl-sm shadow-xl shadow-black/20">
+                <p className="text-xs text-zinc-300 leading-relaxed font-medium">{current.response}</p>
               </div>
 
               {/* Graphical Insights Card */}
-              <div className="border border-zinc-800/60 bg-zinc-900/40 md:bg-zinc-900/60 rounded-xl p-4 md:p-5 space-y-4 shadow-sm">
-                <div className="flex items-center justify-between border-b border-zinc-800/40 pb-2">
+              <div className="border border-white/5 bg-zinc-900/20 backdrop-blur-md rounded-2xl p-5 space-y-4 shadow-xl shadow-black/10">
+                <div className="flex items-center justify-between border-b border-zinc-800/60 pb-3">
                   <div className="flex items-center gap-2">
-                    <BarChart2 className="h-4 w-4 text-primary" />
+                    <BarChart2 className="h-4 w-4 text-indigo-400" />
                     <h4 className="text-xs font-bold text-zinc-200 tracking-wide">{current.chartTitle}</h4>
                   </div>
-                  <span className="text-[10px] text-zinc-500 font-medium">Auto-generated</span>
+                  <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">Auto-generated</span>
                 </div>
 
                 {/* Horizontal Bar Chart */}
@@ -188,12 +188,12 @@ function MockupDashboard() {
                   {current.chartData.map((bar, idx) => (
                     <div key={idx} className="space-y-1.5 group">
                       <div className="flex justify-between text-[11px] font-semibold text-zinc-400">
-                        <span className="group-hover:text-zinc-200 transition-colors">{bar.label}</span>
-                        <span className="text-zinc-500 group-hover:text-zinc-300">{bar.val}%</span>
+                        <span className="group-hover:text-zinc-200 transition-colors font-bold">{bar.label}</span>
+                        <span className="text-zinc-500 group-hover:text-zinc-300 font-bold">{bar.val}%</span>
                       </div>
-                      <div className="h-2 w-full bg-zinc-950 rounded-full overflow-hidden border border-zinc-900">
+                      <div className="h-2.5 w-full bg-zinc-950/80 rounded-full overflow-hidden border border-zinc-900/40">
                         <div
-                          className={`h-full bg-gradient-to-r ${bar.color} rounded-full transition-all duration-700 ease-out`}
+                          className={`h-full bg-gradient-to-r ${bar.color} rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(99,102,241,0.2)]`}
                           style={{ width: `${bar.val}%` }}
                         />
                       </div>
@@ -205,14 +205,14 @@ function MockupDashboard() {
               {/* Actionable Suggestions */}
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2 text-xs font-bold text-zinc-400 uppercase tracking-wider pl-1">
-                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  <Sparkles className="h-3.5 w-3.5 text-indigo-450" />
                   <span>Actionable Recommendations</span>
                 </div>
                 <div className="grid grid-cols-1 gap-2.5">
                   {current.recommendations.map((rec, idx) => (
-                    <div key={idx} className="flex items-start gap-2 p-2.5 md:p-3 rounded-xl border border-zinc-800/40 bg-zinc-900/20 md:bg-zinc-900/35 hover:bg-zinc-900/60 transition-colors">
-                      <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                      <p className="text-[11px] text-zinc-300 leading-relaxed">{rec}</p>
+                    <div key={idx} className="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-zinc-900/10 md:bg-zinc-900/20 hover:bg-zinc-900/50 hover:border-zinc-800 transition-all duration-200">
+                      <CheckCircle2 className="h-4.5 w-4.5 text-indigo-500 shrink-0 mt-0.5" />
+                      <p className="text-[11px] text-zinc-300 leading-relaxed font-semibold">{rec}</p>
                     </div>
                   ))}
                 </div>
@@ -314,43 +314,43 @@ function HomeContent() {
         {/* Glowing Background Grids & Ambient Blobs */}
         <div className="absolute inset-0 bg-grid-pattern opacity-100 pointer-events-none" />
         <div className="absolute inset-0 ambient-glow pointer-events-none" />
-        <div className="absolute top-[20%] left-[-10%] w-[30rem] h-[30rem] rounded-full bg-violet-600/5 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-[20%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-cyan-600/5 blur-[140px] pointer-events-none" />
+        <div className="absolute top-[20%] left-[-10%] w-[30rem] h-[30rem] rounded-full bg-violet-600/5 blur-[120px] pointer-events-none animate-float-blob-1" />
+        <div className="absolute bottom-[20%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-cyan-600/5 blur-[140px] pointer-events-none animate-float-blob-2" />
 
         {/* Unified Premium Navbar */}
         <Navbar user={user} logout={logout} />
 
         {/* Hero Section */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 pt-7 pb-10 md:pb-16 text-center relative z-10">
-          <div className="absolute top-[5%] left-1/2 -translate-x-1/2 w-[280px] h-[280px] bg-primary/10 blur-[80px] rounded-full -z-10 pointer-events-none block md:hidden" />
+          <div className="absolute top-[5%] left-1/2 -translate-x-1/2 w-[280px] h-[280px] bg-indigo-500/10 blur-[80px] rounded-full -z-10 pointer-events-none block md:hidden animate-pulse-glow" />
 
           <div className="max-w-5xl mx-auto flex flex-col items-center">
 
             {/* Glowing Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-[10px] font-bold uppercase tracking-widest text-primary mb-5 sm:mb-6 animate-in fade-in slide-in-from-top-4 duration-1000 select-none">
-              <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/25 bg-indigo-500/5 text-[10px] font-extrabold uppercase tracking-widest text-indigo-400 mb-5 sm:mb-6 animate-in fade-in slide-in-from-top-4 duration-1000 select-none shadow-[0_0_15px_rgba(99,102,241,0.05)]">
+              <Sparkles className="h-3 w-3 text-indigo-400 animate-pulse" />
               <span>Agentic Business Intelligence</span>
             </div>
 
             <h2 className="text-4xl sm:text-6xl font-[950] tracking-tight text-zinc-100 leading-[1.15] sm:leading-[1.1] max-w-4xl text-balance">
               Transform Your Raw Data Into
-              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-primary via-fuchsia-400 to-cyan-400 select-none pb-1 sm:pb-2">
+              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-450 to-cyan-400 select-none pb-1 sm:pb-2">
                 Actionable Intelligence
               </span>
             </h2>
 
-            <p className="text-sm sm:text-base text-zinc-400 max-w-2xl leading-relaxed pt-3 sm:pt-4 px-4 sm:px-0 text-balance">
+            <p className="text-sm sm:text-base text-zinc-400 max-w-2xl leading-relaxed pt-3 sm:pt-4 px-4 sm:px-0 text-balance font-medium">
               Upload complex CSV datasets and converse with agentic workflows in natural language. Our autonomous AI profiles your schemas, queries data instantly, and renders high-end visualizations.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-5 sm:pt-10 w-full max-w-md mx-auto">
-              <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/95 text-primary-foreground font-bold px-8 py-6 rounded-xl text-sm shadow-xl shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-200 group flex items-center justify-center gap-2" asChild>
+              <Button size="lg" className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-8 py-6 rounded-xl text-sm shadow-xl shadow-indigo-650/20 hover:shadow-indigo-600/35 hover:-translate-y-0.5 transition-all duration-300 group flex items-center justify-center gap-2 border border-indigo-500/30" asChild>
                 <Link href="/register">
                   Get Started Free
-                  <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-zinc-800 bg-zinc-950/20 text-zinc-300 hover:text-zinc-100 hover:bg-zinc-900/60 font-semibold px-8 py-6 rounded-xl text-sm transition-all duration-200 flex items-center justify-center gap-2" asChild>
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-zinc-800 bg-zinc-950/20 text-zinc-300 hover:text-zinc-100 hover:bg-zinc-900/50 hover:border-zinc-700 font-bold px-8 py-6 rounded-xl text-sm transition-all duration-300 flex items-center justify-center gap-2 hover:-translate-y-0.5" asChild>
                 <Link href="/login">
                   Live Playground
                 </Link>
@@ -380,48 +380,48 @@ function HomeContent() {
 
           <div className="flex md:grid flex-row md:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto overflow-x-auto md:overflow-x-visible pb-4 md:pb-0 scrollbar-none px-4 md:px-0 -mx-4 md:mx-auto">
             {/* Feature 1 */}
-            <div className="w-[290px] md:w-auto shrink-0 flex flex-col gap-5 rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 sm:p-8 hover:border-zinc-800 hover:bg-zinc-900/10 transition-all duration-300 relative overflow-hidden text-left">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:scale-105 transition-transform duration-300">
+            <div className="w-[290px] md:w-auto shrink-0 flex flex-col gap-5 rounded-2xl glass-panel glass-panel-hover p-6 sm:p-8 relative overflow-hidden text-left group">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="h-12 w-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-105 transition-transform duration-300 shadow-[0_0_15px_rgba(99,102,241,0.1)]">
                 <Database className="h-6 w-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="font-bold text-lg text-zinc-100 tracking-tight group-hover:text-primary transition-colors">
+                <h3 className="font-extrabold text-lg text-zinc-100 tracking-tight group-hover:text-indigo-455 transition-colors">
                   Ingest & Self-Profile
                 </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-zinc-400 leading-relaxed font-semibold">
                   Upload CSV files or link dynamic tables. Our backend profiles your fields, automatically standardizing dates, floats, and categories.
                 </p>
               </div>
             </div>
 
             {/* Feature 2 */}
-            <div className="w-[290px] md:w-auto shrink-0 flex flex-col gap-5 rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 sm:p-8 hover:border-zinc-800 hover:bg-zinc-900/10 transition-all duration-300 relative overflow-hidden text-left">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              <div className="h-12 w-12 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 group-hover:scale-105 transition-transform duration-300">
+            <div className="w-[290px] md:w-auto shrink-0 flex flex-col gap-5 rounded-2xl glass-panel glass-panel-hover p-6 sm:p-8 relative overflow-hidden text-left group">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="h-12 w-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-450 group-hover:scale-105 transition-transform duration-300 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
                 <Brain className="h-6 w-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="font-bold text-lg text-zinc-100 tracking-tight group-hover:text-violet-400 transition-colors">
+                <h3 className="font-extrabold text-lg text-zinc-100 tracking-tight group-hover:text-purple-400 transition-colors">
                   Ask in Plain English
                 </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-zinc-400 leading-relaxed font-semibold">
                   Query tables using natural conversations. No complex SQL commands required. Perfect for operational managers and builders.
                 </p>
               </div>
             </div>
 
             {/* Feature 3 */}
-            <div className="w-[290px] md:w-auto shrink-0 flex flex-col gap-5 rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 sm:p-8 hover:border-zinc-800 hover:bg-zinc-900/10 transition-all duration-300 relative overflow-hidden text-left">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              <div className="h-12 w-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform duration-300">
+            <div className="w-[290px] md:w-auto shrink-0 flex flex-col gap-5 rounded-2xl glass-panel glass-panel-hover p-6 sm:p-8 relative overflow-hidden text-left group">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="h-12 w-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform duration-300 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
                 <Sparkles className="h-6 w-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="font-bold text-lg text-zinc-100 tracking-tight group-hover:text-cyan-400 transition-colors">
+                <h3 className="font-extrabold text-lg text-zinc-100 tracking-tight group-hover:text-cyan-400 transition-colors">
                   Interactive Dashboards
                 </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-zinc-400 leading-relaxed font-semibold">
                   Instantly obtain actionable recommendations accompanied by gorgeous responsive charts. Click, zoom, and export charts to presentations.
                 </p>
               </div>
@@ -509,25 +509,25 @@ function HomeContent() {
       {/* Glowing Background Grids & Ambient Blobs */}
       <div className="absolute inset-0 bg-grid-pattern opacity-100 pointer-events-none" />
       <div className="absolute inset-0 ambient-glow pointer-events-none" />
-      <div className="absolute top-[10%] left-[-10%] w-[30rem] h-[30rem] rounded-full bg-violet-600/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[10%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-cyan-600/5 blur-[140px] pointer-events-none" />
+      <div className="absolute top-[10%] left-[-10%] w-[30rem] h-[30rem] rounded-full bg-violet-600/5 blur-[120px] pointer-events-none animate-float-blob-1" />
+      <div className="absolute bottom-[10%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-cyan-600/5 blur-[140px] pointer-events-none animate-float-blob-2" />
 
       {/* Unified Premium Navbar */}
       <Navbar
         user={user}
         logout={logout}
         actions={
-          <Button onClick={() => setDialogOpen(true)} className="gap-2 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground py-5 px-5 rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200">
+          <Button onClick={() => setDialogOpen(true)} className="gap-2 text-xs font-bold bg-indigo-650 hover:bg-indigo-750 text-white py-5 px-5 rounded-xl shadow-lg shadow-indigo-650/20 hover:-translate-y-0.5 transition-all duration-200 border border-indigo-500/25">
             New Project
           </Button>
         }
       />
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="border-zinc-800 bg-zinc-950/95 backdrop-blur-md max-w-md rounded-2xl shadow-2xl">
+        <DialogContent className="border-white/5 bg-zinc-950/95 backdrop-blur-md max-w-md rounded-2xl shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-zinc-100 font-bold text-lg">Create New Project</DialogTitle>
-            <DialogDescription className="text-zinc-400 text-xs">
+            <DialogTitle className="text-zinc-100 font-extrabold text-lg">Create New Project</DialogTitle>
+            <DialogDescription className="text-zinc-400 text-xs font-semibold">
               Create a new project to start analyzing your data with AI.
             </DialogDescription>
           </DialogHeader>
@@ -537,14 +537,14 @@ function HomeContent() {
               value={newProjectName}
               onChange={(e) => setNewProjectName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleCreateProject()}
-              className="bg-zinc-900/50 border-zinc-800 focus:border-primary/50 text-zinc-100 placeholder-zinc-600 rounded-xl"
+              className="bg-zinc-900/50 border-zinc-800 focus:border-indigo-550/50 text-zinc-150 placeholder-zinc-650 rounded-xl py-3 text-xs"
             />
           </div>
           <DialogFooter className="gap-2.5">
-            <Button variant="outline" onClick={() => setDialogOpen(false)} className="rounded-xl text-xs font-semibold border-zinc-800 bg-zinc-900/40 text-zinc-300 hover:text-zinc-100 hover:bg-zinc-850">
+            <Button variant="outline" onClick={() => setDialogOpen(false)} className="rounded-xl text-xs font-bold border-zinc-800 bg-zinc-900/30 text-zinc-350 hover:text-zinc-100 hover:bg-zinc-900/60">
               Cancel
             </Button>
-            <Button onClick={handleCreateProject} disabled={isCreating || !newProjectName.trim()} className="rounded-xl text-xs font-bold">
+            <Button onClick={handleCreateProject} disabled={isCreating || !newProjectName.trim()} className="rounded-xl text-xs font-bold bg-indigo-650 hover:bg-indigo-750 text-white border border-indigo-500/25">
               {isCreating && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Create Project
             </Button>
@@ -561,12 +561,12 @@ function HomeContent() {
                 Your Projects
               </h2>
               {!isLoading && projects.length > 0 && (
-                <span className="px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-bold text-indigo-400 uppercase tracking-wider">
+                <span className="px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-[10px] font-extrabold text-indigo-400 uppercase tracking-wider">
                   {projects.length} {projects.length === 1 ? 'Project' : 'Projects'}
                 </span>
               )}
             </div>
-            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-semibold">
               Manage and analyze your dynamic CSV datasets with autonomous agentic intelligence.
             </p>
           </div>
@@ -574,7 +574,7 @@ function HomeContent() {
           {!isLoading && projects.length > 0 && (
             <Button
               onClick={() => setDialogOpen(true)}
-              className="w-full sm:w-auto gap-2 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground py-5 px-5 rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200"
+              className="w-full sm:w-auto gap-2 text-xs font-bold bg-indigo-650 hover:bg-indigo-750 text-white py-5 px-5 rounded-xl shadow-lg shadow-indigo-650/20 hover:-translate-y-0.5 transition-all duration-200 border border-indigo-500/25"
             >
               Create New Project
             </Button>
@@ -583,22 +583,22 @@ function HomeContent() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
           </div>
         ) : projects.length === 0 ? (
-          <Card className="border border-dashed border-zinc-800 bg-zinc-950/40 backdrop-blur-md rounded-2xl shadow-xl max-w-md mx-auto overflow-hidden relative group">
-            <div className="absolute inset-0 bg-primary/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          <Card className="border border-dashed border-zinc-800 bg-zinc-950/20 backdrop-blur-md rounded-2xl shadow-xl max-w-md mx-auto overflow-hidden relative group glass-panel">
+            <div className="absolute inset-0 bg-indigo-500/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             <CardContent className="flex flex-col items-center justify-center py-16 px-6 text-center">
-              <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-indigo-500/5 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-105 transition-transform duration-300">
+              <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-indigo-500/15 to-indigo-500/5 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md">
                 <FolderOpen className="h-7 w-7" />
               </div>
-              <h3 className="text-lg font-bold text-zinc-100 tracking-tight mb-2">No Projects Found</h3>
-              <p className="text-xs text-zinc-400 mb-8 max-w-sm leading-relaxed">
+              <h3 className="text-lg font-bold text-zinc-150 tracking-tight mb-2">No Projects Found</h3>
+              <p className="text-xs text-zinc-400 mb-8 max-w-sm leading-relaxed font-medium">
                 Connect and upload CSV datasets to explore them instantly using native, natural conversations with autonomous AI agents.
               </p>
               <Button
                 onClick={() => setDialogOpen(true)}
-                className="gap-2 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground py-5 px-6 rounded-xl shadow-xl shadow-primary/10 hover:-translate-y-0.5 transition-all duration-200"
+                className="gap-2 text-xs font-bold bg-indigo-650 hover:bg-indigo-750 text-white py-5 px-6 rounded-xl shadow-xl shadow-indigo-650/15 hover:-translate-y-0.5 transition-all duration-200 border border-indigo-500/25"
               >
                 Create Your First Project
               </Button>
@@ -609,22 +609,22 @@ function HomeContent() {
             {projects.map((project) => (
               <Card
                 key={project.id}
-                className="cursor-pointer border border-zinc-900 bg-zinc-950/40 backdrop-blur-md hover:border-zinc-800/80 hover:bg-zinc-900/10 transition-all duration-300 relative overflow-hidden group rounded-2xl shadow-md flex flex-col justify-between"
+                className="cursor-pointer border border-white/5 bg-zinc-900/20 backdrop-blur-md hover:border-indigo-500/30 hover:bg-zinc-900/40 transition-all duration-300 relative overflow-hidden group rounded-2xl shadow-lg flex flex-col justify-between"
                 onClick={() => router.push(`/projects/${project.id}`)}
               >
-                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                 <CardHeader className="p-5 pb-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                      <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-105 transition-transform duration-300 shrink-0">
+                      <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-105 transition-transform duration-300 shrink-0 shadow-sm">
                         <Database className="h-5.5 w-5.5" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <CardTitle className="text-sm sm:text-base font-extrabold text-zinc-200 group-hover:text-zinc-100 transition-colors truncate tracking-tight">
+                        <CardTitle className="text-sm sm:text-base font-extrabold text-zinc-200 group-hover:text-indigo-400 transition-colors truncate tracking-tight">
                           {project.name}
                         </CardTitle>
-                        <CardDescription className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider mt-0.5">
+                        <CardDescription className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider mt-0.5">
                           Created {new Date(project.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                         </CardDescription>
                       </div>
@@ -633,7 +633,7 @@ function HomeContent() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 rounded-lg text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 opacity-0 group-hover:opacity-100 transition-all duration-200 shrink-0 active:scale-95"
+                      className="h-8 w-8 rounded-lg text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 opacity-0 group-hover:opacity-100 transition-all duration-200 shrink-0 active:scale-95 border border-transparent hover:border-rose-500/10"
                       onClick={(e) => handleDeleteProject(project.id, e)}
                       title="Delete Project"
                     >
@@ -642,8 +642,8 @@ function HomeContent() {
                   </div>
                 </CardHeader>
 
-                <div className="px-5 pb-5 pt-3 border-t border-zinc-900/60 flex items-center justify-between text-[11px] font-semibold text-zinc-400">
-                  <div className="flex items-center gap-1.5">
+                <div className="px-5 pb-5 pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-semibold text-zinc-400">
+                  <div className="flex items-center gap-1.5 font-bold">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     <span>
                       {(project.tables?.length ?? 0) === 0
@@ -652,7 +652,7 @@ function HomeContent() {
                     </span>
                   </div>
 
-                  <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest group-hover:translate-x-0.5 transition-transform duration-200 flex items-center gap-0.5">
+                  <span className="text-[10px] font-extrabold text-indigo-400 uppercase tracking-widest group-hover:translate-x-0.5 group-hover:text-indigo-300 transition-all duration-200 flex items-center gap-0.5">
                     Enter Workspace
                   </span>
                 </div>

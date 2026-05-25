@@ -154,11 +154,11 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
               )}
               <div
                 className={`min-w-0 ${message.role === 'user'
-                    ? 'max-w-[85%] md:max-w-[70%] bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl rounded-br-sm px-4 py-2.5 shadow-md shadow-indigo-600/10 font-semibold text-xs leading-relaxed'
+                    ? 'max-w-[85%] md:max-w-[70%] bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-2xl rounded-br-sm px-4.5 py-3 shadow-lg shadow-indigo-600/10 font-bold text-xs leading-relaxed'
                     : 'w-full max-w-full md:max-w-[90%] space-y-4'
                   }`}
               >
-                <div className={message.role === 'assistant' ? 'text-xs text-zinc-200 leading-relaxed font-sans bg-zinc-950/40 backdrop-blur-md border border-zinc-900 rounded-2xl p-4.5 shadow-sm' : ''}>
+                <div className={message.role === 'assistant' ? 'text-xs text-zinc-200 leading-relaxed font-sans bg-zinc-900/40 backdrop-blur-md border border-white/5 rounded-2xl p-4.5 shadow-xl shadow-black/10' : ''}>
                   {message.content}
                 </div>
                 {message.queryResult && (
@@ -175,8 +175,8 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
                 )}
               </div>
               {message.role === 'user' && (
-                <div className="flex-shrink-0 w-8.5 h-8.5 rounded-xl bg-zinc-950/50 border border-zinc-900 flex items-center justify-center text-zinc-300 shrink-0 shadow-inner">
-                  <User className="h-4.5 w-4.5" />
+                <div className="flex-shrink-0 w-8.5 h-8.5 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-center justify-center text-xs font-extrabold text-indigo-450 shrink-0 shadow-sm">
+                  U
                 </div>
               )}
             </div>
@@ -196,9 +196,9 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
       </div>
 
       {/* Input Area - Sticky at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-zinc-900/60 p-4 bg-zinc-950/60 backdrop-blur-md z-10 w-full shrink-0">
+      <div className="absolute bottom-0 left-0 right-0 border-t border-white/5 p-4 bg-zinc-950/60 backdrop-blur-md z-10 w-full shrink-0">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-          <div className="relative flex items-center">
+          <div className="relative flex items-center shadow-lg shadow-black/30 rounded-2xl">
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -209,14 +209,14 @@ export function ChatInterface({ projectId, hasData }: ChatInterfaceProps) {
                   : "Upload CSV files first to start asking questions..."
               }
               disabled={!hasData || isLoading}
-              className="pr-14 min-h-[52px] max-h-[120px] resize-none bg-zinc-950/50 backdrop-blur-sm border border-zinc-900 hover:border-zinc-800 focus-visible:ring-1 focus-visible:ring-indigo-500/50 text-zinc-100 placeholder-zinc-500 rounded-2xl p-4 text-xs scrollbar-none"
+              className="pr-14 min-h-[54px] max-h-[120px] resize-none bg-zinc-900/50 backdrop-blur-md border border-white/5 hover:border-indigo-500/35 focus-visible:ring-1 focus-visible:ring-indigo-500/40 text-zinc-100 placeholder-zinc-550 rounded-2xl p-4.5 text-xs scrollbar-none"
               rows={1}
             />
             <Button
               type="submit"
               size="icon"
               disabled={!input.trim() || isLoading || !hasData}
-              className="absolute right-3 h-8.5 w-8.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/25 transition-all duration-200 shrink-0 active:scale-95 disabled:opacity-40"
+              className="absolute right-3 h-8.5 w-8.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20 transition-all duration-250 shrink-0 active:scale-95 disabled:opacity-35 border border-indigo-500/20"
             >
               <Send className="h-4 w-4" />
             </Button>

@@ -50,9 +50,9 @@ export function Navbar({
   return (
     <>
       {/* Top Desktop & Public Navbar (Hidden on mobile) */}
-      <header className="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900/50 transition-all duration-300 hidden md:block">
+      <header className="sticky top-0 z-50 bg-zinc-950/65 backdrop-blur-xl border-b border-white/5 transition-all duration-300 hidden md:block shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
         {/* Neon Breathing Top Accent Line */}
-        <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/50 to-transparent pointer-events-none" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between relative">
 
@@ -107,9 +107,15 @@ export function Navbar({
             {user && (
               <Link
                 href="/pricing"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 text-indigo-300 text-xs font-bold transition-all duration-200 shadow-sm shadow-indigo-500/5 hover:shadow-indigo-500/10"
+                className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-indigo-500/25 bg-indigo-500/10 hover:bg-indigo-500/15 hover:border-indigo-500/45 text-indigo-300 text-xs font-extrabold transition-all duration-300 shadow-[0_0_15px_rgba(99,102,241,0.06)] hover:shadow-[0_0_20px_rgba(99,102,241,0.12)] hover:-translate-y-0.5"
               >
-                <Coins className="h-3.5 w-3.5 text-indigo-400" />
+                <div className="relative flex items-center justify-center">
+                  <Coins className="h-4 w-4 text-indigo-400 animate-pulse" />
+                  <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-550"></span>
+                  </span>
+                </div>
                 <span>{user.creditsBalance} credits</span>
               </Link>
             )}
@@ -207,7 +213,7 @@ export function Navbar({
 
       {/* Premium Mobile Floating Bottom Navigation Dock (Visible on mobile for global pages) */}
       {!title && (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 h-[68px] bg-zinc-950/80 backdrop-blur-2xl border-t border-zinc-900/60 pb-safe shadow-[0_-8px_30px_rgba(0,0,0,0.5)] z-50 flex items-center justify-around px-2">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 h-[68px] bg-zinc-950/65 backdrop-blur-xl border-t border-white/5 pb-safe shadow-[0_-8px_30px_rgba(0,0,0,0.6)] z-50 flex items-center justify-around px-2">
           {user ? (
             <>
               {/* Authenticated Tabs */}

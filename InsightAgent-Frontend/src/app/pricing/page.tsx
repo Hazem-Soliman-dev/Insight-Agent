@@ -123,38 +123,40 @@ export default function PricingPage() {
               return (
                 <Card
                   key={plan.id}
-                  className={`relative bg-zinc-950/40 backdrop-blur-md border ${
-                    isPopular ? 'border-indigo-500/70 shadow-2xl scale-100 md:scale-105 bg-zinc-950/80 z-10' : 'border-zinc-900 hover:border-zinc-800/80 hover:bg-zinc-900/10'
-                  } transition-all duration-300 rounded-2xl overflow-hidden min-w-[240px] sm:min-w-[320px] md:min-w-0 flex-1 shrink-0 md:shrink snap-center flex flex-col justify-between`}
+                  className={`relative backdrop-blur-md transition-all duration-300 rounded-2xl overflow-hidden min-w-[240px] sm:min-w-[320px] md:min-w-0 flex-1 shrink-0 md:shrink snap-center flex flex-col justify-between ${
+                    isPopular 
+                      ? 'border-indigo-500/70 shadow-[0_0_30px_rgba(99,102,241,0.12)] scale-100 md:scale-105 bg-zinc-950/85 z-10' 
+                      : 'border-white/5 bg-zinc-900/10 hover:border-zinc-800/80 hover:bg-zinc-900/30'
+                  }`}
                 >
                   <CardHeader className="text-center p-5 pb-3 pt-7">
-                    <CardTitle className="text-xl font-extrabold text-zinc-100">{plan.name}</CardTitle>
-                    <CardDescription className="text-xs text-zinc-500">{plan.description}</CardDescription>
+                    <CardTitle className="text-xl font-extrabold text-zinc-150 tracking-tight">{plan.name}</CardTitle>
+                    <CardDescription className="text-xs text-zinc-500 font-semibold">{plan.description}</CardDescription>
                     <div className="mt-4 flex items-baseline justify-center gap-1">
                       <span className="text-4xl sm:text-5xl font-black tracking-tight text-zinc-100">${plan.price}</span>
-                      <span className="text-zinc-500 text-xs font-semibold uppercase tracking-wider"> one-time</span>
+                      <span className="text-zinc-550 text-xs font-bold uppercase tracking-wider"> one-time</span>
                     </div>
                   </CardHeader>
                   <CardContent className="p-5 pt-3 flex-1 flex flex-col justify-between">
                     <ul className="space-y-2.5 mb-6">
                       {features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2.5 text-zinc-300">
+                        <li key={feature} className="flex items-start gap-2.5 text-zinc-300 font-medium">
                           <Check className="h-4.5 w-4.5 text-indigo-400 flex-shrink-0 mt-0.5" />
                           <span className="text-xs leading-relaxed">{feature}</span>
                         </li>
                       ))}
                     </ul>
                     <Button
-                      className={`w-full py-5 rounded-xl text-xs font-bold shadow-md cursor-pointer transition-all duration-200 ${
+                      className={`w-full py-5.5 rounded-xl text-xs font-extrabold shadow-md cursor-pointer transition-all duration-200 border ${
                         isPopular
-                          ? 'bg-indigo-600 hover:bg-indigo-700 text-white hover:-translate-y-0.5'
-                          : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:-translate-y-0.5'
+                          ? 'bg-indigo-650 hover:bg-indigo-750 text-white hover:-translate-y-0.5 border-indigo-500/30 shadow-indigo-650/20'
+                          : 'bg-zinc-900 hover:bg-zinc-850 text-zinc-300 border-zinc-800 hover:-translate-y-0.5'
                       }`}
                       onClick={() => handleCheckout(plan.id)}
                       disabled={checkoutLoading !== null}
                     >
                       {checkoutLoading === plan.id ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin text-white" />
                       ) : (
                         `Buy ${plan.credits.toLocaleString()} Credits`
                       )}
@@ -166,12 +168,12 @@ export default function PricingPage() {
           </div>
         )}
 
-        <div className="mt-12 text-center max-w-xl mx-auto bg-zinc-950/40 backdrop-blur-md border border-zinc-900 p-6 rounded-2xl shadow-sm mb-14 sm:mb-0">
-          <h3 className="text-lg font-bold text-zinc-200 mb-1.5 tracking-tight">Need bulk credits?</h3>
-          <p className="text-xs text-zinc-400 mb-5 leading-relaxed">
+        <div className="mt-12 text-center max-w-xl mx-auto bg-zinc-900/10 backdrop-blur-md border border-white/5 p-6 rounded-2xl shadow-xl mb-14 sm:mb-0">
+          <h3 className="text-lg font-black text-zinc-200 mb-1.5 tracking-tight uppercase text-xs">Need bulk credits?</h3>
+          <p className="text-xs text-zinc-400 mb-5 leading-relaxed font-semibold">
             We provide tailored credit bundles for enterprise integration, large data volumes, and multi-tenant deployments.
           </p>
-          <Button className="bg-zinc-900 hover:bg-zinc-800 text-zinc-350 hover:text-zinc-100 border border-zinc-800 rounded-xl text-xs font-bold py-5 px-6 shadow-sm transition-all duration-200">
+          <Button className="bg-zinc-900 hover:bg-zinc-850 text-zinc-350 hover:text-zinc-100 border border-zinc-800 rounded-xl text-xs font-extrabold py-5 px-6 shadow-sm transition-all duration-200">
             Contact Enterprise Sales
           </Button>
         </div>

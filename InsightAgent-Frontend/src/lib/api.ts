@@ -22,28 +22,15 @@ function deleteCookie(name: string) {
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
-  async (config) => {
+  (config) => {
     if (typeof window !== 'undefined') {
-      let token: string | null | undefined = null;
-
-      // 1. Try retrieving the token from Clerk's global client session
-      if ((window as any).Clerk?.session) {
-        try {
-          token = await (window as any).Clerk.session.getToken();
-        } catch (err) {
-          console.error('Failed to get Clerk session token:', err);
-        }
-      }
-
-      // 2. Fallback to cookie check if Clerk is not fully loaded/available
-      if (!token) {
+      const getClerkToken = () => {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; __session=`);
-        if (parts.length === 2) {
-          token = parts.pop()?.split(';').shift();
-        }
-      }
-
+        if (parts.length === 2) return parts.pop()?.split(';').shift();
+        return null;
+      };
+      const token = getClerkToken();
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

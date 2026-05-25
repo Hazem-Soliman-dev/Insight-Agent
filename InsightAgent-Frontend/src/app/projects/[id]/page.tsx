@@ -17,6 +17,7 @@ import { Navbar } from '@/components/Navbar';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
@@ -83,16 +84,16 @@ const getTypeIcon = (type: string) => {
 
 const inferType = (columnName: string, sampleValue?: unknown): string => {
   const name = columnName.toLowerCase();
-  
+
   if (sampleValue !== undefined && sampleValue !== null) {
     const valStr = String(sampleValue).trim();
     if (valStr !== '') {
       if (!isNaN(Number(valStr))) {
         return valStr.includes('.') ? 'numeric' : 'integer';
       }
-      const isDate = !isNaN(Date.parse(valStr)) && 
-                     (valStr.includes('-') || valStr.includes('/') || valStr.includes(':')) &&
-                     valStr.length > 5;
+      const isDate = !isNaN(Date.parse(valStr)) &&
+        (valStr.includes('-') || valStr.includes('/') || valStr.includes(':')) &&
+        valStr.length > 5;
       if (isDate) {
         return 'timestamp';
       }
@@ -131,6 +132,7 @@ export default function ProjectPage() {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'schema' | 'preview'>('schema');
+  const [columnSearch, setColumnSearch] = useState('');
 
   const getColumnType = (colName: string) => {
     const sampleRow = previewData?.data?.[0];
@@ -176,6 +178,7 @@ export default function ProjectPage() {
   const handlePreviewTable = async (tableName: string) => {
     setIsPreviewLoading(true);
     setActiveTab('schema'); // Reset to schema tab when opening
+    setColumnSearch('');
     try {
       const data = await agentApi.previewTable(projectId, tableName);
       setPreviewData({ tableName, data });
@@ -195,7 +198,7 @@ export default function ProjectPage() {
         <div className="absolute inset-0 ambient-glow pointer-events-none" />
         <div className="absolute top-[10%] left-[-10%] w-[30rem] h-[30rem] rounded-full bg-violet-600/5 blur-[120px] pointer-events-none" />
         <div className="absolute bottom-[10%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-cyan-600/5 blur-[140px] pointer-events-none" />
-        
+
         <div className="flex flex-col items-center gap-3 relative z-10">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <p className="text-zinc-400 text-xs font-semibold animate-pulse">Loading project details...</p>
@@ -331,17 +334,17 @@ export default function ProjectPage() {
 
       {/* Dataset Details & Preview Dialog */}
       <Dialog open={!!previewData} onOpenChange={() => setPreviewData(null)}>
-        <DialogContent className="max-w-4xl max-h-[85vh] border-zinc-800 bg-zinc-950/95 backdrop-blur-md text-zinc-100 rounded-2xl shadow-2xl flex flex-col p-6 overflow-hidden">
-          <DialogHeader className="flex flex-row items-start justify-between pb-4 border-b border-zinc-900/80">
+        <DialogContent className="max-w-4xl max-h-[85vh] border-white/5 bg-zinc-950/95 backdrop-blur-md text-zinc-100 rounded-2xl shadow-2xl flex flex-col p-6 overflow-hidden">
+          <DialogHeader className="flex flex-row items-start justify-between pb-4 border-b border-white/5">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-inner">
                 <FileSpreadsheet className="h-5 w-5" />
               </div>
               <div className="space-y-0.5">
-                <DialogTitle className="text-base font-bold text-zinc-150 tracking-tight">
+                <DialogTitle className="text-base font-extrabold text-zinc-150 tracking-tight">
                   {currentTableMetadata?.originalName || previewData?.tableName}
                 </DialogTitle>
-                <DialogDescription className="text-zinc-500 text-[10px] font-medium tracking-wide uppercase">
+                <DialogDescription className="text-zinc-500 text-[10px] font-extrabold tracking-wide uppercase">
                   Table name: <span className="text-zinc-400 font-semibold font-mono">{previewData?.tableName}</span>
                 </DialogDescription>
               </div>
@@ -350,25 +353,23 @@ export default function ProjectPage() {
 
           {/* Dialog Tabs */}
           <div className="flex items-center justify-between mt-4 mb-2 gap-2 flex-wrap">
-            <div className="flex p-1 bg-zinc-900/50 border border-zinc-900/60 rounded-xl">
+            <div className="flex p-1 bg-zinc-900/40 border border-zinc-900/60 rounded-xl">
               <button
                 onClick={() => setActiveTab('schema')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 ${
-                  activeTab === 'schema'
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15'
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${activeTab === 'schema'
+                    ? 'bg-indigo-650 text-white shadow-lg shadow-indigo-600/15'
                     : 'text-zinc-400 hover:text-zinc-200'
-                }`}
+                  }`}
               >
                 <Database className="h-3.5 w-3.5" />
                 Schema & Info
               </button>
               <button
                 onClick={() => setActiveTab('preview')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 ${
-                  activeTab === 'preview'
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15'
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${activeTab === 'preview'
+                    ? 'bg-indigo-650 text-white shadow-lg shadow-indigo-600/15'
                     : 'text-zinc-400 hover:text-zinc-200'
-                }`}
+                  }`}
               >
                 <Eye className="h-3.5 w-3.5" />
                 Data Preview
@@ -376,9 +377,9 @@ export default function ProjectPage() {
             </div>
 
             {currentTableMetadata && (
-              <div className="flex gap-4.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400 bg-zinc-900/30 px-3 py-1.5 rounded-lg border border-zinc-900">
+              <div className="flex gap-4 text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 bg-zinc-900/30 px-3 py-1.5 rounded-lg border border-zinc-900 shadow-sm">
                 <div>
-                  Columns: <span className="text-zinc-200 font-extrabold">{currentTableMetadata.columns.length}</span>
+                  Columns: <span className="text-indigo-400 font-black">{currentTableMetadata.columns.length}</span>
                 </div>
               </div>
             )}
@@ -387,22 +388,22 @@ export default function ProjectPage() {
           <div className="flex-1 min-h-0 py-3 overflow-hidden">
             {isPreviewLoading ? (
               <div className="flex flex-col items-center justify-center h-full py-16 gap-3">
-                <Loader2 className="h-7 w-7 animate-spin text-indigo-500" />
-                <p className="text-zinc-500 text-xs font-semibold">Loading dataset information...</p>
+                <Loader2 className="h-7 w-7 animate-spin text-indigo-400" />
+                <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider animate-pulse">Loading dataset information...</p>
               </div>
             ) : activeTab === 'schema' && currentTableMetadata ? (
               <ScrollArea className="h-full pr-1.5">
                 <div className="space-y-5 pb-4">
                   {/* General Info Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="bg-zinc-900/10 border border-zinc-900 rounded-xl p-3.5">
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Total Schema Columns</p>
+                    <div className="bg-zinc-900/10 border border-white/5 rounded-xl p-3.5">
+                      <p className="text-[9px] font-extrabold text-zinc-550 uppercase tracking-widest">Total Schema Columns</p>
                       <p className="text-lg font-black text-zinc-200 mt-1">{currentTableMetadata.columns.length}</p>
                     </div>
-                    <div className="bg-zinc-900/10 border border-zinc-900 rounded-xl p-3.5">
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Storage Status</p>
-                      <p className="text-xs font-bold text-emerald-400 mt-2.5 flex items-center gap-1.5">
-                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <div className="bg-zinc-900/10 border border-white/5 rounded-xl p-3.5">
+                      <p className="text-[9px] font-extrabold text-zinc-550 uppercase tracking-widest">Storage Status</p>
+                      <p className="text-xs font-extrabold text-emerald-400 mt-2 flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse-glow" />
                         In-Memory Cached
                       </p>
                     </div>
@@ -410,41 +411,51 @@ export default function ProjectPage() {
 
                   {/* Schema Columns Table */}
                   <div>
-                    <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-3 ml-0.5">Columns Schema Mapping</h4>
+                    <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                      <h4 className="text-[10px] font-extrabold text-zinc-450 uppercase tracking-widest ml-0.5">Columns Schema Mapping</h4>
+                      <Input
+                        placeholder="Filter columns..."
+                        value={columnSearch}
+                        onChange={(e) => setColumnSearch(e.target.value)}
+                        className="max-w-[200px] h-7 bg-zinc-900/50 border-zinc-800 text-[11px] placeholder-zinc-600 rounded-lg py-1 focus-visible:ring-1 focus-visible:ring-indigo-500/50"
+                      />
+                    </div>
                     <div className="border border-zinc-900 rounded-xl overflow-hidden bg-zinc-950/20">
-                      <div className="grid grid-cols-2 bg-zinc-900/40 px-4 py-2.5 border-b border-zinc-900 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                      <div className="grid grid-cols-2 bg-zinc-900/40 px-4 py-2.5 border-b border-zinc-900 text-[9px] font-extrabold uppercase tracking-widest text-zinc-500">
                         <div>Column Name</div>
                         <div>Data Type</div>
                       </div>
-                      <div className="divide-y divide-zinc-900 max-h-[35vh] overflow-y-auto">
-                        {currentTableMetadata.columns.map((col, idx) => {
-                          const colType = getColumnType(col);
-                          const IconComp = getTypeIcon(colType);
-                          return (
-                            <div key={idx} className="grid grid-cols-2 px-4 py-3 items-center hover:bg-zinc-900/10 transition-colors">
-                              <span className="text-xs font-bold text-zinc-300 truncate pr-4">{col}</span>
-                              <div className="flex items-center gap-2">
-                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-extrabold tracking-wide uppercase ${getTypeBadgeColor(colType)}`}>
-                                  <IconComp className="h-2.5 w-2.5 shrink-0" />
-                                  {colType}
-                                </span>
+                      <div className="divide-y divide-zinc-900/60 max-h-[35vh] overflow-y-auto">
+                        {currentTableMetadata.columns
+                          .filter((col) => col.toLowerCase().includes(columnSearch.toLowerCase()))
+                          .map((col, idx) => {
+                            const colType = getColumnType(col);
+                            const IconComp = getTypeIcon(colType);
+                            return (
+                              <div key={idx} className="grid grid-cols-2 px-4 py-3 items-center hover:bg-zinc-900/10 transition-colors">
+                                <span className="text-xs font-bold text-zinc-300 truncate pr-4">{col}</span>
+                                <div className="flex items-center gap-2">
+                                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-extrabold tracking-wide uppercase ${getTypeBadgeColor(colType)}`}>
+                                    <IconComp className="h-2.5 w-2.5 shrink-0" />
+                                    {colType}
+                                  </span>
+                                </div>
                               </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
                       </div>
                     </div>
                   </div>
                 </div>
               </ScrollArea>
             ) : previewData?.data && previewData.data.length > 0 ? (
-              <div className="border border-zinc-900 rounded-xl overflow-hidden bg-zinc-950/20 h-full flex flex-col">
+              <div className="border border-zinc-900 rounded-xl overflow-hidden bg-zinc-950/20 h-full flex flex-col shadow-inner">
                 <ScrollArea className="flex-1">
                   <Table>
                     <TableHeader className="bg-zinc-900/30 sticky top-0 z-20 backdrop-blur-md">
                       <TableRow className="border-b border-zinc-900 hover:bg-transparent">
                         {Object.keys(previewData.data[0]).map((col) => (
-                          <TableHead key={col} className="whitespace-nowrap text-zinc-400 font-bold uppercase tracking-widest text-[9px] py-3.5 px-4 border-b border-zinc-900">
+                          <TableHead key={col} className="whitespace-nowrap text-zinc-400 font-extrabold uppercase tracking-widest text-[9px] py-3.5 px-4 border-b border-zinc-900">
                             {col}
                           </TableHead>
                         ))}
@@ -452,9 +463,9 @@ export default function ProjectPage() {
                     </TableHeader>
                     <TableBody>
                       {previewData.data.map((row, idx) => (
-                        <TableRow key={idx} className="border-b border-zinc-900/50 hover:bg-zinc-900/20 transition-colors duration-150">
+                        <TableRow key={idx} className="border-b border-zinc-900/50 hover:bg-zinc-900/10 transition-colors duration-150">
                           {Object.keys(row).map((col) => (
-                            <TableCell key={col} className="whitespace-nowrap text-xs text-zinc-300 py-2.5 px-4">
+                            <TableCell key={col} className="whitespace-nowrap text-xs text-zinc-350 py-2.5 px-4">
                               {String(row[col] ?? '')}
                             </TableCell>
                           ))}
@@ -467,7 +478,7 @@ export default function ProjectPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full py-16 gap-2">
-                <p className="text-center text-zinc-500 text-xs font-semibold">No data available for preview</p>
+                <p className="text-center text-zinc-550 text-xs font-bold uppercase tracking-wider">No data available for preview</p>
               </div>
             )}
           </div>
