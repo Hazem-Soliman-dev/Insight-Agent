@@ -1,1 +1,1 @@
-web: npm run start:prod
+web: npx prisma migrate deploy && exec node dist/src/main

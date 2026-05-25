@@ -68,18 +68,37 @@ export class JwtAuthGuard implements CanActivate {
             `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() ||
             null;
 
-          localUser = await this.prisma.user.create({
-            data: {
-              clerkUserId,
-              email,
-              name,
-              creditsBalance: 5, // free startup credits
-            },
+          // Check if a user with the same email already exists
+          const existingUserByEmail = await this.prisma.user.findUnique({
+            where: { email },
           });
 
-          this.logger.log(
-            `Created local user for clerk user ${clerkUserId} with email ${email}`,
-          );
+          if (existingUserByEmail) {
+            // Update the existing user's clerkUserId
+            localUser = await this.prisma.user.update({
+              where: { email },
+              data: {
+                clerkUserId,
+                name: existingUserByEmail.name || name,
+              },
+            });
+            this.logger.log(
+              `Linked existing local user (email: ${email}) with new clerkUserId ${clerkUserId}`,
+            );
+          } else {
+            // Create a new user
+            localUser = await this.prisma.user.create({
+              data: {
+                clerkUserId,
+                email,
+                name,
+                creditsBalance: 5, // free startup credits
+              },
+            });
+            this.logger.log(
+              `Created local user for clerk user ${clerkUserId} with email ${email}`,
+            );
+          }
         } catch (error) {
           this.logger.error(`Failed to sync clerk user ${clerkUserId}:`, error);
           throw new UnauthorizedException('Could not sync user metadata');

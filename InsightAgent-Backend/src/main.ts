@@ -10,6 +10,9 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { rawBody: true });
 
+  // Enable graceful shutdown hooks to ensure Node receives and handles SIGTERM from Railway properly
+  app.enableShutdownHooks();
+
   // Trust proxy for correct rate limiting IP detection behind reverse proxies (like Railway)
   app.set('trust proxy', 1);
 
@@ -82,10 +85,12 @@ async function bootstrap() {
     }),
   );
 
-  // API prefix
-  app.setGlobalPrefix('api');
+  // API prefix (exclude root path to handle e2e tests and custom/default Railway health check probes)
+  app.setGlobalPrefix('api', {
+    exclude: ['/'],
+  });
 
-  const port = process.env.PORT || 3001;
+  const port = parseInt(process.env.PORT || '3001', 10);
   await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 InsightAgent API running on http://localhost:${port}/api`);

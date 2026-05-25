@@ -12,6 +12,7 @@ const app_module_1 = require("./app.module");
 async function bootstrap() {
     const logger = new common_1.Logger('Bootstrap');
     const app = await core_1.NestFactory.create(app_module_1.AppModule, { rawBody: true });
+    app.enableShutdownHooks();
     app.set('trust proxy', 1);
     app.use((0, helmet_1.default)());
     app.use((0, express_rate_limit_1.default)({
@@ -58,8 +59,10 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
         disableErrorMessages: isProduction,
     }));
-    app.setGlobalPrefix('api');
-    const port = process.env.PORT || 3001;
+    app.setGlobalPrefix('api', {
+        exclude: ['/'],
+    });
+    const port = parseInt(process.env.PORT || '3001', 10);
     await app.listen(port, '0.0.0.0');
     logger.log(`🚀 InsightAgent API running on http://localhost:${port}/api`);
     logger.log(`🔒 Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
