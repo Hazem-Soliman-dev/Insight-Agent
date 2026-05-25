@@ -81,49 +81,11 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // If 401 and we haven't retried yet, try to refresh token
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      if (typeof window !== 'undefined') {
-        const refreshToken = localStorage.getItem('refreshToken');
-        
-        if (refreshToken) {
-          try {
-            const { data } = await axios.post(`${API_URL}/api/auth/refresh`, {}, {
-              headers: { Authorization: `Bearer ${refreshToken}` }
-            });
-            
-            // Store in both localStorage and cookies
-            localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('refreshToken', data.refreshToken);
-            setCookie('accessToken', data.accessToken, 7);
-            
-            // Retry original request with new token
-            originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-            return api(originalRequest);
-          } catch (refreshError) {
-            // Refresh failed, clear tokens and redirect to login
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            deleteCookie('accessToken');
-            // Only redirect if not already on login page to avoid loops
-            if (!window.location.pathname.startsWith('/login')) {
-              window.location.href = '/login';
-            }
-            return Promise.reject(refreshError);
-          }
-        } else {
-          // No refresh token, clear everything and redirect to login
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          deleteCookie('accessToken');
-          // Only redirect if not already on login page to avoid loops
-          if (!window.location.pathname.startsWith('/login')) {
-            window.location.href = '/login';
-          }
-        }
-      }
+    // Handle unauthorized errors (e.g. session expired or invalid token) without redirect loop
+    if (error.response?.status === 401) {
+      // For Clerk, session/token management is handled by ClerkProvider.
+      // We don't want to redirect unconditionally here to avoid loops.
+      console.warn('API returned 401 Unauthorized:', error.config?.url);
     }
 
     console.error('Full API Error Object:', error);

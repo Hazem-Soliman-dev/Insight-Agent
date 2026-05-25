@@ -51,15 +51,30 @@ let JwtAuthGuard = JwtAuthGuard_1 = class JwtAuthGuard {
                     }
                     const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() ||
                         null;
-                    localUser = await this.prisma.user.create({
-                        data: {
-                            clerkUserId,
-                            email,
-                            name,
-                            creditsBalance: 5,
-                        },
+                    const existingUserByEmail = await this.prisma.user.findUnique({
+                        where: { email },
                     });
-                    this.logger.log(`Created local user for clerk user ${clerkUserId} with email ${email}`);
+                    if (existingUserByEmail) {
+                        localUser = await this.prisma.user.update({
+                            where: { email },
+                            data: {
+                                clerkUserId,
+                                name: existingUserByEmail.name || name,
+                            },
+                        });
+                        this.logger.log(`Linked existing local user (email: ${email}) with new clerkUserId ${clerkUserId}`);
+                    }
+                    else {
+                        localUser = await this.prisma.user.create({
+                            data: {
+                                clerkUserId,
+                                email,
+                                name,
+                                creditsBalance: 5,
+                            },
+                        });
+                        this.logger.log(`Created local user for clerk user ${clerkUserId} with email ${email}`);
+                    }
                 }
                 catch (error) {
                     this.logger.error(`Failed to sync clerk user ${clerkUserId}:`, error);
